@@ -1,0 +1,50 @@
+<c-base.base>
+<c-slot name="title">Home</c-slot>
+<c-slot name="content">
+<div class="max-w-4xl mx-auto py-8">
+    <h1 class="text-2xl font-righteous text-soft-green mb-6">Button Examples</h1>truncatewords
+    
+    <div class="space-y-8">
+        
+        
+        <!-- Outline Buttons -->
+        <div>
+            <h2 class="text-xl font-medium mb-4 text-soft-green/80">Outline Buttons</h2>
+            <div class="flex flex-wrap gap-4">
+                {% include 'cotton/base/components/button.html' with text="Outline Button" variant="vector lmd" %}
+                {% include 'cotton/base/components/button.html' with text="Outline Link" href="#" variant="outline" %}
+            </div>
+        </div>
+        <!-- Standard Buttons -->
+        <div>
+            <h2 class="text-xl font-medium mb-4 text-soft-green/80">Standard Buttons</h2>
+            <div class="flex flex-wrap gap-4">
+                {% include 'cotton/base/components/button.html' with text="Primary Button" %}
+                {% include 'cotton/base/components/button.html' with text="With Link" href="#" %}
+                {% include 'cotton/base/components/button.html' with text="Submit Form" type="submit" %}
+            </div>
+        </div>
+        
+        <!-- Buttons with Icons -->
+        <div>
+            <h2 class="text-xl font-medium mb-4 text-soft-green/80">Buttons with Icons</h2>
+            <div class="flex flex-wrap gap-4">
+                {% include 'cotton/base/components/button.html' with text="Add Item" icon='<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>' %}
+                
+                {% include 'cotton/base/components/button.html' with text="Save" variant="outline" icon='<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>' %}
+            </div>
+        </div>
+        
+        <!-- Different Sizes -->
+        <div>
+            <h2 class="text-xl font-medium mb-4 text-soft-green/80">Different Sizes</h2>
+            <div class="flex flex-wrap gap-4 items-center">
+                {% include 'cotton/base/components/button.html' with text="Small" class="text-xs px-2 py-1" %}
+                {% include 'cotton/base/components/button.html' with text="Default" %}
+                {% include 'cotton/base/components/button.html' with text="Large" class="text-base px-6 py-3" %}
+            </div>
+        </div>
+    </div>
+</div>
+</c-slot>
+</c-base.base>

@@ -1,0 +1,26 @@
+{
+    "files.associations": {
+        "*.html": "html"
+    },
+    "editor.formatOnSave": true,
+    "html.format.enable": false,
+    "[html]": {
+        "editor.defaultFormatter": "monosans.djhtml"
+    },
+    "djhtml.indentSize": 4,
+    "djhtml.closingBracketNewline": true,
+    "djhtml.tabWidth": 4,
+    
+    // Ruff settings
+    "python.linting.enabled": true,
+    "[python]": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll": true,
+            "source.organizeImports": true
+        },
+        "editor.defaultFormatter": "charliermarsh.ruff"
+    },
+    "ruff.enable": true,
+    "ruff.importStrategy": "fromEnvironment"
+}

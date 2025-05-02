@@ -1,0 +1,23 @@
+{% comment %}
+Button component that uses the soft-green color from the project's color scheme.
+Usage examples:
+  {% include 'cotton/base/components/button.html' with text="Submit" href="#" %}
+  {% include 'cotton/base/components/button.html' with text="Save" type="submit" %}
+  {% include 'cotton/base/components/button.html' with text="Cancel" variant="outline" %}
+{% endcomment %}
+
+{% if href %}
+<a href="{{ href }}" class="{% if variant == 'outline' %}bg-transparent border-2 border-soft-green-bright text-soft-green-bright hover:bg-gradient-to-r hover:from-soft-green-bright/20 hover:to-lime-yellow/30{% else %}bg-gradient-to-r from-soft-green-bright to-soft-green text-white hover:from-soft-green-bright hover:to-lime-yellow shadow-lg{% endif %} inline-flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-soft-green-bright/70 transform hover:-translate-y-0.5 {% if class %}{{ class }}{% endif %}">
+  {{ text }}
+  {% if icon %}
+    <span class="ml-2">{{ icon|safe }}</span>
+  {% endif %}
+</a>
+{% else %}
+<button type="{{ type|default:'button' }}" class="{% if variant == 'outline' %}bg-transparent border-2 border-soft-green-bright text-soft-green-bright hover:bg-gradient-to-r hover:from-soft-green-bright/20 hover:to-lime-yellow/30{% else %}bg-gradient-to-r from-soft-green-bright to-soft-green text-white hover:from-soft-green-bright hover:to-lime-yellow shadow-lg{% endif %} inline-flex items-center justify-center px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-soft-green-bright/70 transform hover:-translate-y-0.5 {% if class %}{{ class }}{% endif %}">
+  {{ text }}
+  {% if icon %}
+    <span class="ml-2">{{ icon|safe }}</span>
+  {% endif %}
+</button>
+{% endif %}

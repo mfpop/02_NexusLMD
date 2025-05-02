@@ -1,0 +1,73 @@
+{% load static tailwind_tags %}
+{% load static %}
+<link href="{% static 'css/tailwind.css' %}" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus LMD | {{ title }}</title>
+    {% tailwind_css %}
+    <link rel="stylesheet" href="{% static 'fonts/fonts.css' %}">
+    <link rel="stylesheet" href="{% static 'css/buttons.css' %}">
+    <c-slot name="head">{{extra_head}}</c-slot>
+</head>
+<body class="bg-cream-white font-lora ">
+    <div class="grid grid-rows-[auto_1fr] grid-cols-[70px_1fr] min-h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="h-screen bg-light-beige shadow-md row-span-2">
+            <c-base.sidebar />
+        </aside>
+        
+        <!-- Main content wrapper -->
+        <div id="main_content" class="col-start-2 row-span-2 overflow-hidden">
+            <!-- Main content -->
+            <div class=" h-full">
+            <main class="bg-gray-200 bg-opacity-50 p-0 rounded-lg transition-all duration-300 transform animate-fade-in-up mt-[36px] w-full h-[calc(100%-32px)] overflow-auto" id="main-content">
+                <!-- Top menu -->
+                <header class="bg-white shadow-md fixed top-0 left-0 w-full z-10" style="margin-left: 72px;">
+                    {% include 'cotton/base/topmenu.html' %}
+                </header>
+                <div class="flex flex-col justify-start h-full p-2">
+                    {{ content }}
+                </div>
+            </main>
+            </div>
+        </div>
+    </div>
+    {{ extra_js }}
+    
+    <script>
+        // Handle page transitions
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('a[href]:not([target="_blank"])');
+            
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Don't apply transition for certain types of links
+                    if (this.hostname !== window.location.hostname || 
+                        this.getAttribute('href').startsWith('#') || 
+                        this.getAttribute('download') !== null) {
+                        return;
+                    }
+                    
+                    const mainContent = document.getElementById('main-content');
+                    
+                    if (mainContent) {
+                        e.preventDefault();
+                        
+                        // Remove entry animation class and add exit animation class
+                        mainContent.classList.remove('animate-fade-in-up');
+                        mainContent.classList.add('opacity-0', 'translate-y-4');
+                        
+                        // Navigate after transition completes
+                        setTimeout(() => {
+                            window.location.href = this.href;
+                        }, 300);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

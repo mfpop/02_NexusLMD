@@ -1,0 +1,55 @@
+/* Tailwind Button Styles */
+@tailwind base;
+@tailwind components;
+
+@layer components {
+  .btn {
+    @apply py-2 px-4 rounded transition-all duration-300 transform;
+  }
+  
+  /* Primary Button - Scale Effect */
+  .btn-primary {
+    @apply bg-soft-green text-cream-white;
+    @apply hover:bg-lime-yellow hover:text-soft-green-dark hover:scale-105 hover:shadow-lg hover:rotate-1;
+  }
+  
+  /* Secondary Button - Slide Effect */
+  .btn-secondary {
+    @apply bg-light-beige text-soft-green-dark relative overflow-hidden;
+    @apply hover:bg-light-beige hover:text-soft-green hover:shadow-md;
+  }
+  .btn-secondary::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-1 bg-lime-yellow transition-all duration-300;
+  }
+  .btn-secondary:hover::after {
+    @apply w-full;
+  }
+  
+  /* Outline Button - Border Animation */
+  .btn-outline {
+    @apply border-2 border-soft-green text-soft-green-dark relative z-10 bg-transparent;
+    @apply hover:text-cream-white hover:border-transparent hover:shadow-md;
+  }
+  .btn-outline::before {
+    content: '';
+    @apply absolute top-0 left-0 right-0 bottom-0 bg-soft-green scale-x-0 origin-left transition-transform duration-300 -z-10;
+  }
+  .btn-outline:hover::before {
+    @apply scale-x-100;
+  }
+  
+  /* Text Button - Underline Effect */
+  .btn-text {
+    @apply bg-transparent text-soft-green-dark border-b-2 border-transparent px-1 py-1 rounded-none;
+    @apply hover:border-b-2 hover:border-lime-yellow;
+  }
+  
+  /* Icon Button - Pulse Effect */
+  .btn-icon {
+    @apply p-2 bg-light-beige rounded-full text-soft-green-dark;
+    @apply hover:bg-lime-yellow hover:text-soft-green-dark hover:animate-pulse-subtle;
+  }
+}
+
+@tailwind utilities;
