@@ -1,152 +1,125 @@
-<c-base.base>
-<c-slot name="title">Home</c-slot>
-<c-slot name="content">
-<div class="h-full grid grid-rows-[auto_1fr] gap-10  p-6">
-    <!-- Top Row: Welcome & Stats in Compact Layout -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 ">
-        <!-- Welcome Message (Simplified) -->
-        <div class="md:col-span-1 bg-bg-primary p-2.5 rounded-lg border border-blue-100 shadow-blue flex flex-col justify-between min-h-[120px]">
-            <div class="bg-gradient-to-r from-blue-500 to-indigo-600 p-4 rounded-lg shadow-lg text-white">
-                <h1 class="text-xl font-bold font-righteous">Welcome</h1>
-                <p class="text-sm mt-2">
-                    Managing production metrics with a modern, readable design.
-                </p>
-                <div class="mt-4 flex gap-2">
-                    <a href="/authenticate/register" class="bg-white text-blue-600 font-semibold px-3 py-1 rounded hover:bg-gray-100 text-sm">
-                        Get Started
-                    </a>
-                    <a href="/about" class="bg-blue-700 hover:bg-blue-800 text-white px-3 py-1 rounded text-sm">
-                        Learn More
-                    </a>
-                </div>
-            </div>
+{% extends 'cotton/base/base.html' %}
+{% load static %}
 
+{% block title %}
+  Home
+{% endblock %}
+{% block page_title %}
+  Welcome to Nexus LMD
+{% endblock %}
+
+{% block content %}
+  <div class="h-full overflow-y-auto">
+    <div class="container mx-auto px-4 py-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Welcome Section -->
+        <div class="md:col-span-2">
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h1 class="text-2xl font-bold text-blue-600 mb-4">Welcome to Nexus LMD</h1>
+            <p class="text-gray-700 mb-4">Nexus LMD (Lean Manufacturing Dashboard) is your ultimate solution for production management. Designed to optimize manufacturing processes, improve efficiency, and provide actionable insights for production teams and managers.</p>
+            <p class="text-gray-700 mb-4">Navigate through our features and tools using the menu or the quick access cards below to streamline your production workflows.</p>
+
+            {% if not user.is_authenticated %}
+              <div class="mt-6 flex space-x-4">
+                <a href="{% url 'auth:login' %}" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">Log In</a>
+                <a href="{% url 'auth:register' %}" class="border border-blue-600 text-blue-600 px-4 py-2 rounded-md hover:bg-blue-50 transition">Register</a>
+              </div>
+            {% endif %}
+          </div>
         </div>
 
-        <!-- Stats Cards (Compact and Subtle Colors) -->
-        <div class="md:col-span-2 bg-white px-3 py-1 rounded-lg border-2 border-blue-50">
-            <div class="grid grid-cols-3 items-center h-full gap-3">
-            <div class="bg-gray-100 p-1 rounded-md shadow-sm text-center text-gray-700 border border-gray-200 transform transition-all duration-300 hover:scale-105 hover:shadow-md relative overflow-hidden group">
-                <div class="absolute top-0 left-0 p-1 bg-gray-200 rounded-br-md">
-                <span class="text-sm font-bold text-gray-600">📈</span>
-                </div>
-                <div class="text-xl font-semibold relative z-10">98%</div>
-                <div class="text-xs uppercase relative z-10">Uptime</div>
+        <!-- News & Updates -->
+        <div class="md:col-span-1">
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold text-blue-600 mb-4">News & Updates</h2>
+            <div class="space-y-4">
+              <div class="border-b border-gray-100 pb-3">
+                <h3 class="font-medium">New Features Released</h3>
+                <p class="text-sm text-gray-600">Enhanced data visualization tools now available</p>
+                <p class="text-xs text-gray-500 mt-1">May 3, 2025</p>
+              </div>
+              <div class="border-b border-gray-100 pb-3">
+                <h3 class="font-medium">System Maintenance</h3>
+                <p class="text-sm text-gray-600">Scheduled maintenance on May 10, 2025</p>
+                <p class="text-xs text-gray-500 mt-1">April 28, 2025</p>
+              </div>
+              <a href="{% url 'news:index' %}" class="block text-blue-600 hover:text-blue-800 text-sm mt-2">View all news →</a>
             </div>
-            <div class="bg-gray-100 p-1 rounded-md shadow-sm text-center text-gray-700 border border-gray-200 transform transition-all duration-300 hover:scale-105 hover:shadow-md relative overflow-hidden group">
-                <div class="absolute top-0 left-0 p-1 bg-gray-200 rounded-br-md">
-                <span class="text-sm font-bold text-gray-600">🏭</span>
-                </div>
-                <div class="text-xl font-semibold relative z-10">24.5K</div>
-                <div class="text-xs uppercase relative z-10">
-                    Production
-                </div>
-            </div>
-            <div class="bg-gray-100 p-1 rounded-md shadow-sm text-center text-gray-700 border border-gray-200 transform transition-all duration-300 hover:scale-105 hover:shadow-md relative overflow-hidden group">
-                <div class="absolute top-0 left-0 p-1 bg-gray-200 rounded-br-md">
-                <span class="text-sm font-bold text-gray-600">👥</span>
-                </div>
-                <div class="text-xl font-semibold relative z-10">15</div>
-                <div class="text-xs uppercase relative z-10">Teams</div>
-            </div>
-            <div class="bg-gray-100 p-1 rounded-md shadow-sm text-center text-gray-700 border border-gray-200 transform transition-all duration-300 hover:scale-105 hover:shadow-md relative overflow-hidden group">
-                <div class="absolute top-0 left-0 p-1 bg-gray-200 rounded-br-md">
-                    <span class="text-sm font-bold text-gray-600">⏱️</span>
-                </div>
-                <div class="text-xl font-semibold relative z-10">85%</div>
-                <div class="text-xs uppercase relative z-10">On-Time Delivery</div>
-            </div>
-            <div class="bg-gray-100 p-1 rounded-md shadow-sm text-center text-gray-700 border border-gray-200 transform transition-all duration-300 hover:scale-105 hover:shadow-md relative overflow-hidden group">
-                <div class="absolute top-0 left-0 p-1 bg-gray-200 rounded-br-md">
-                    <span class="text-sm font-bold text-gray-600">⚙️</span>
-                </div>
-                <div class="text-xl font-semibold relative z-10">92%</div>
-                <div class="text-xs uppercase relative z-10">Machine Utilization</div>
-            </div>
-            <div class="bg-gray-100 p-1 rounded-md shadow-sm text-center text-gray-700 border border-gray-200 transform transition-all duration-300 hover:scale-105 hover:shadow-md relative overflow-hidden group">
-                <div class="absolute top-0 left-0 p-1 bg-gray-200 rounded-br-md">
-                    <span class="text-sm font-bold text-gray-600">📦</span>
-                </div>
-                <div class="text-xl font-semibold relative z-10">5%</div>
-                <div class="text-xs uppercase relative z-10">Defect Rate</div>
-            </div>
-            </div>
+          </div>
         </div>
+      </div>
+
+      <!-- Quick Access Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-8">
+        <!-- Production Card -->
+        <a href="{% url 'production:index' %}" class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
+          <div class="flex flex-col items-center">
+            <svg class="w-12 h-12 text-blue-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+            </svg>
+            <h3 class="font-semibold text-center">Production</h3>
+            <p class="text-gray-600 text-sm text-center mt-2">Manage laboratory production processes</p>
+          </div>
+        </a>
+
+        <!-- Metrics Card -->
+        <a href="{% url 'metrics:index' %}" class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
+          <div class="flex flex-col items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-blue-500">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18h18M9 17V7m6 10V10" />
+            </svg>
+            <h3 class="font-semibold text-center">Metrics</h3>
+            <p class="text-gray-600 text-sm text-center mt-2">View analytics and performance data</p>
+          </div>
+        </a>
+
+        {% if user.is_authenticated %}
+          <!-- Activities Card (shown only to logged-in users) -->
+          <a href="{% url 'activities:index' %}" class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
+            <div class="flex flex-col items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-blue-500">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
+              </svg>
+
+              <h3 class="font-semibold text-center">Activities</h3>
+              <p class="text-gray-600 text-sm text-center mt-2">Track and manage daily tasks</p>
+            </div>
+          </a>
+
+          <!-- Chat Card (shown only to logged-in users) -->
+          <a href="{% url 'chat:index' %}" class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
+            <div class="flex flex-col items-center">
+              <svg class="w-12 h-12 text-blue-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+              </svg>
+              <h3 class="font-semibold text-center">Chat</h3>
+              <p class="text-gray-600 text-sm text-center mt-2">Communicate with your team</p>
+            </div>
+          </a>
+        {% else %}
+          <!-- Contact Card (shown only to non-authenticated users) -->
+          <a href="{% url 'contact:index' %}" class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
+            <div class="flex flex-col items-center">
+              <svg class="w-12 h-12 text-blue-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+              </svg>
+              <h3 class="font-semibold text-center">Contact</h3>
+              <p class="text-gray-600 text-sm text-center mt-2">Get in touch with our team</p>
+            </div>
+          </a>
+
+          <!-- About Card (shown only to non-authenticated users) -->
+          <a href="{% url 'about:index' %}" class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
+            <div class="flex flex-col items-center">
+              <svg class="w-12 h-12 text-blue-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <h3 class="font-semibold text-center">About</h3>
+              <p class="text-gray-600 text-sm text-center mt-2">Learn more about Nexus LMD</p>
+            </div>
+          </a>
+        {% endif %}
+      </div>
     </div>
-
-    <!-- Middle Row: Features & Activity in Two Columns -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mx-2 max-h-[calc(100vh-180px)]"> 
-        <!-- Left Column: Features -->
-        <div class="min-h-0 max-h-full flex flex-col overflow-hidden">
-            <div class="flex justify-between items-center mb-1">
-                <h2 class="text-sm font-righteous text-blue-500">Key Features</h2>
-            </div>
-            <div class="grid grid-cols-1 gap-1 overflow-y-auto pr-1 flex-1 h-0"> <!-- Added h-0 to ensure proper scrolling -->
-                <div class="bg-bg-tertiary p-2 rounded border-l-4 border-blue-500">
-                    <h3 class="text-sm font-semibold">Production Analytics</h3>
-                    <p class="text-text-secondary text-xs truncate">Real-time analytics and customizable dashboards.</p>
-                    <ul class="list-disc list-inside mt-1 text-[10px] text-text-secondary space-y-1">
-                        <li>Track production efficiency in real-time.</li>
-                        <li>Generate detailed reports with one click.</li>
-                        <li>Customize dashboards to suit your needs.</li>
-                    </ul>
-                </div>
-                <div class="bg-bg-tertiary p-2 rounded border-l-4 border-blue-500">
-                    <h3 class="text-sm font-semibold">Team Collaboration</h3>
-                    <p class="text-text-secondary text-sm truncate">Streamline workflows with integrated collaboration.</p>
-                    <ul class="list-disc list-inside mt-1 text-[10px] text-text-secondary space-y-1">
-                        <li>Share files and updates in real-time.</li>
-                        <li>Assign tasks and monitor progress effortlessly.</li>
-                        <li>Enhance communication with built-in messaging tools.</li>
-                    </ul>
-                </div>
-                <div class="bg-bg-tertiary p-2 rounded border-l-4 border-blue-500">
-                    <h3 class="text-sm font-semibold">Performance Tracking</h3>
-                    <p class="text-text-secondary text-sm truncate">Set goals and track progress with metrics.</p>
-                    <ul class="list-disc list-inside mt-1 text-[10px] text-text-secondary space-y-1">
-                        <li>Define clear objectives for your team.</li>
-                        <li>Monitor key performance indicators (KPIs).</li>
-                        <li>Analyze trends to improve efficiency.</li>
-                    </ul>
-                </div>
-                
-            </div>
-        </div>
-        
-        <!-- Right Column: Recent Activity -->
-        <div class="min-h-0 flex flex-col overflow-hidden">
-            <div class="flex justify-between items-center mb-1">
-                <h2 class="text-sm font-righteous text-blue-500">Recent Activity</h2>
-                <a href="/activities" class="text-blue-500 hover:text-blue-700 text-[10px]">View all →</a>
-            </div>
-            <div class="bg-bg-primary rounded border border-blue-100 shadow-blue overflow-y-auto pr-1 flex-1">
-                <ul class="divide-y divide-blue-50">
-                    <li class="p-1 flex justify-between">
-                        <div>
-                            <p class="text-text-primary text-xs truncate">Production target reached</p>
-                            <p class="text-text-tertiary text-[10px] truncate">Production Department</p>
-                        </div>
-                        <span class="text-text-tertiary text-[10px]">2h ago</span>
-                    </li>
-                    <li class="p-1 flex justify-between">
-                        <div>
-                            <p class="text-text-primary text-xs truncate">New team member added</p>
-                            <p class="text-text-tertiary text-[10px] truncate">Human Resources</p>
-                        </div>
-                        <span class="text-text-tertiary text-[10px]">Yesterday</span>
-                    </li>
-                    <li class="p-1 flex justify-between">
-                        <div>
-                            <p class="text-text-primary text-xs truncate">System maintenance done</p>
-                            <p class="text-text-tertiary text-[10px] truncate">IT Department</p>
-                        </div>
-                        <span class="text-text-tertiary text-[10px]">3d ago</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-</c-slot>
-</c-base.base>
-
+  </div>
+{% endblock %}

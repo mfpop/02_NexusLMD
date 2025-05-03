@@ -1,0 +1,32 @@
+{% extends 'cotton/base/base.html' %}
+{% load static %}
+
+{% block title %}
+  Logout | NexusLMD
+{% endblock %}
+
+{% block content %}
+  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full bg-white rounded-lg shadow-md p-8 space-y-8">
+      <div class="text-center">
+        <img class="mx-auto h-12 w-auto" src="{% static 'images/logo.svg' %}" alt="NexusLMD Logo" />
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign Out</h2>
+        <p class="mt-2 text-center text-sm text-gray-600">Are you sure you want to log out?</p>
+      </div>
+
+      <form method="POST" action="{% url 'logout' %}">
+        {% csrf_token %}
+
+        <div class="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
+          <a href="{% url 'profile' %}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-8 rounded-md text-center">Cancel</a>
+
+          <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-8 rounded-md">Sign Out</button>
+        </div>
+      </form>
+
+      <div class="mt-6 pt-6 border-t border-gray-200 text-sm text-gray-500 text-center">
+        <p>You will need to sign in again to access your account.</p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

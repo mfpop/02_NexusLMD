@@ -3,6 +3,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.shortcuts import redirect
 from django.urls import include, path
+from django.views.generic import RedirectView
 
 
 # Function for redirecting root URL
@@ -22,10 +23,11 @@ urlpatterns = [
     path("__reload__/", include("django_browser_reload.urls")),
     
     # Authentication app URLs
-    # path('auth/', include('apps.authenticate.urls')),
+    path('auth/', include('apps.authenticate.urls')),
+    path('accounts/profile/', RedirectView.as_view(url='/auth/profile/', permanent=False), name='default_profile_redirect'),
     
     # Root URL redirects to home
-    # path('', redirect_to_home, name='root'),
+    path('', lambda request: redirect('home:index'), name='root'),
 ]
 
 # Add static and media files URLs if in debug mode

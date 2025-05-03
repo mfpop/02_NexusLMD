@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
 
-# Create your views here.
 def index(request):
-  return render(request, 'about/pages/index.html', {'title': 'About'})
+    """View for the About page."""
+    return render(request, 'cotton/about/pages/index.html', {'title': 'About'})

@@ -1,20 +1,67 @@
-Create login, register, logout,change password, reset password, and profile pages using tailwind css, django template,alpine js, htmx  language.
-All pages must be stored in the templates/cotton/authenticate/pages directory and the components in the templates/cotton/authenticate/components directory.
-The pages will exted the base.html file and use the tailwind css classes for styling.
-the profile page wil be structured in a card as follows:
--profile header: tile on the left, buttons on the right(Profile link for personale profile edit, Address link for address edit, Work experiens for work history, Education for education history  and Logout link for logout)
--the profile body will be structure in two columns:
--left dolumn: avatar image, user, email (in a box), user first name, user second name, phone number, title; avatar will have the capabilite tu change the picture and the picture will be saved and render automaticaly after the uploading image;the user and email cand be edited or selected
-- right column: the content will be render depending of the button selected, defaul will render the user bio
-for md and lg screens the profile card wil have the dimensions: w-75% of the screen, h--80% of the screen 
--profile footer: on the left side change password button, one center registered date,last signin date,on the right side button for cancel and exit and save button
+{% extends 'cotton/base/base.html' %}
+{% load static %}
 
+{% block title %}
+  My Profile
+{% endblock %}
+{% block page_title %}
+  User Profile
+{% endblock %}
 
+{% block content %}
+  <div class="container mx-auto p-6">
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h1 class="text-2xl font-bold mb-6 text-blue-600">Welcome, {{ user.username }}!</h1>
 
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-blue-50 p-4 rounded shadow">
+          <h2 class="font-bold text-lg mb-2 text-blue-700">Personal Information</h2>
+          <ul class="space-y-2">
+            <li>
+              <span class="font-medium">Username:</span> {{ user.username }}
+            </li>
+            <li>
+              <span class="font-medium">Email:</span> {{ user.email|default:'Not provided' }}
+            </li>
+            <li>
+              <span class="font-medium">Joined:</span> {{ user.date_joined|date:'F d, Y' }}
+            </li>
+            <li>
+              <span class="font-medium">Last Login:</span> {{ user.last_login|date:'F d, Y H:i' }}
+            </li>
+          </ul>
+          <div class="mt-4">
+            <a href="{% url 'auth:change_password' %}" class="text-sm text-blue-600 hover:text-blue-800">Change Password</a>
+          </div>
+        </div>
 
+        <div class="bg-blue-50 p-4 rounded shadow">
+          <h2 class="font-bold text-lg mb-2 text-blue-700">Profile Navigation</h2>
+          <ul class="space-y-2">
+            <li>
+              <a href="{% url 'auth:profile_work' %}" class="text-blue-600 hover:text-blue-800">Work History</a>
+            </li>
+            <li>
+              <a href="{% url 'auth:profile_education' %}" class="text-blue-600 hover:text-blue-800">Education History</a>
+            </li>
+            <li>
+              <a href="{% url 'auth:profile_address' %}" class="text-blue-600 hover:text-blue-800">Address Information</a>
+            </li>
+          </ul>
+        </div>
 
-
-
-
-
-the body will contain the user information like name, email, phone number, address, work history and education history.
+        <div class="bg-blue-50 p-4 rounded shadow">
+          <h2 class="font-bold text-lg mb-2 text-blue-700">Account Actions</h2>
+          <ul class="space-y-2">
+            <li>
+              <a href="{% url 'auth:edit_profile' %}" class="text-blue-600 hover:text-blue-800">Edit Profile</a>
+            </li>
+            <li>
+              <a href="{% url 'auth:logout' %}" class="text-red-500 hover:text-red-700">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% comment %}Profile Tabs Component Parameters: - active_tab: The currently active tab ('profile', 'address', 'work', 'education'){% endcomment %}
+
+<div class="flex flex-wrap border-b border-gray-200 mb-6">
+  <button class="mr-1 py-2 px-4 text-sm font-medium rounded-t-lg {% if active_tab == 'profile' %}
+      
+      bg-blue-600 text-white
+
+    {% else %}
+      
+      bg-gray-100 hover:bg-gray-200 text-gray-700
+
+    {% endif %}"
+    hx-get="{% url 'profile' %}"
+    hx-target="#profile-content"
+    hx-push-url="true">
+    Profile
+  </button>
+
+  <button class="mr-1 py-2 px-4 text-sm font-medium rounded-t-lg {% if active_tab == 'address' %}
+      
+      bg-blue-600 text-white
+
+    {% else %}
+      
+      bg-gray-100 hover:bg-gray-200 text-gray-700
+
+    {% endif %}"
+    hx-get="{% url 'profile_address' %}"
+    hx-target="#profile-content"
+    hx-push-url="true">
+    Address
+  </button>
+
+  <button class="mr-1 py-2 px-4 text-sm font-medium rounded-t-lg {% if active_tab == 'work' %}
+      
+      bg-blue-600 text-white
+
+    {% else %}
+      
+      bg-gray-100 hover:bg-gray-200 text-gray-700
+
+    {% endif %}"
+    hx-get="{% url 'profile_work' %}"
+    hx-target="#profile-content"
+    hx-push-url="true">
+    Work Experience
+  </button>
+
+  <button class="mr-1 py-2 px-4 text-sm font-medium rounded-t-lg {% if active_tab == 'education' %}
+      
+      bg-blue-600 text-white
+
+    {% else %}
+      
+      bg-gray-100 hover:bg-gray-200 text-gray-700
+
+    {% endif %}"
+    hx-get="{% url 'profile_education' %}"
+    hx-target="#profile-content"
+    hx-push-url="true">
+    Education
+  </button>
+
+  <div class="flex items-center">
+    <h1 class="text-2xl font-semibold">{{ title }}</h1>
+    <form method="POST" action="{% url 'auth:logout' %}" class="ml-auto">
+      {% csrf_token %}
+      <button type="submit" class="py-2 px-4 text-sm font-medium rounded-lg bg-red-500 hover:bg-red-600 text-white">Logout</button>
+    </form>
+  </div>
+</div>

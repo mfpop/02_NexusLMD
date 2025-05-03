@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
 
 
-# Create your views here.
 def index(request):
-  return render(request, 'contact/pages/index.html', {'title': 'Contact'})
+    """View for the Contact page."""
+    return render(request, 'cotton/contact/pages/index.html', {'title': 'Contact Us'})

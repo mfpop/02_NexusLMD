@@ -1,0 +1,68 @@
+{% extends 'cotton/base/base.html' %}
+{% load static %}
+
+{% block title %}
+  Education History
+{% endblock %}
+{% block page_title %}
+  Education History
+{% endblock %}
+
+{% block content %}
+  <div class="container mx-auto p-6">
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-blue-600">Education History</h1>
+        <a href="{% url 'auth:profile' %}" class="text-sm text-blue-600 hover:text-blue-800 flex items-center">
+          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>Back to Profile
+        </a>
+      </div>
+
+      <!-- Education history content -->
+      <div class="mb-6">
+        <p class="text-gray-600 italic">No education history records found. Add your education details below.</p>
+      </div>
+
+      <!-- Add education form -->
+      <div class="bg-blue-50 p-4 rounded shadow">
+        <h2 class="font-bold text-lg mb-4 text-blue-700">Add Education</h2>
+        <form method="POST" action="{% url 'auth:profile_education' %}" class="space-y-4">
+          {% csrf_token %}
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="institution" class="block text-sm font-medium text-gray-700">Institution Name</label>
+              <input type="text" id="institution" name="institution" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" />
+            </div>
+            <div>
+              <label for="degree" class="block text-sm font-medium text-gray-700">Degree/Certification</label>
+              <input type="text" id="degree" name="degree" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="start_date" class="block text-sm font-medium text-gray-700">Start Date</label>
+              <input type="date" id="start_date" name="start_date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" />
+            </div>
+            <div>
+              <label for="end_date" class="block text-sm font-medium text-gray-700">End Date</label>
+              <input type="date" id="end_date" name="end_date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" />
+            </div>
+          </div>
+
+          <div>
+            <label for="field_of_study" class="block text-sm font-medium text-gray-700">Field of Study</label>
+            <input type="text" id="field_of_study" name="field_of_study" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" />
+          </div>
+
+          <div class="flex justify-end">
+            <button type="button" onclick="window.location.href='{% url 'auth:profile' %}'" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md mr-2">Cancel</button>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Add Education</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

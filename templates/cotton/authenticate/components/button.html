@@ -1,0 +1,70 @@
+{% comment %}
+Button Component
+
+Usage:
+{% include 'cotton/authenticate/components/button.html' with 
+  text='Submit' 
+  type='primary' 
+  full_width=True 
+  is_submit=True
+  hx_get="/some-url"
+  hx_target="#element-id"
+%}
+
+Parameters:
+- text: Button text content
+- type: Button style (primary, secondary, outline, danger)
+- size: Button size (sm, md, lg)
+- full_width: Boolean for w-full class
+- is_submit: Boolean for type="submit" (default is button)
+- disabled: Boolean for disabled state
+- icon_left: HTML for icon before text
+- icon_right: HTML for icon after text
+- href: For <a> tag instead of button
+- hx_*: Any HTMX attributes
+- extra_classes: Additional CSS classes
+{% endcomment %}
+
+{% if href %}
+  <a 
+    href="{{ href }}"
+    class="
+      inline-flex items-center justify-center
+      {% if size == 'sm' %}px-3 py-1.5 text-sm{% elif size == 'lg' %}px-6 py-3 text-lg{% else %}px-4 py-2 text-base{% endif %}
+      font-medium rounded-md
+      {% if type == 'primary' %}bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500{% elif type == 'secondary' %}bg-gray-200 hover:bg-gray-300 text-gray-800 focus:ring-gray-500{% elif type == 'outline' %}bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 focus:ring-blue-500{% elif type == 'danger' %}bg-red-600 hover:bg-red-700 text-white focus:ring-red-500{% else %}bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500{% endif %}
+      focus:outline-none focus:ring-2 focus:ring-offset-2
+      {% if full_width %}w-full{% endif %}
+      {% if disabled %}opacity-50 cursor-not-allowed pointer-events-none{% endif %}
+      {{ extra_classes|default:'' }}
+    "
+    {% if disabled %}aria-disabled="true"{% endif %}
+    {% for attr, value in hx_attrs.items %}{{ attr }}="{{ value }}"{% endfor %}
+  >
+    {% if icon_left %}{{ icon_left|safe }}{% endif %}
+    {{ text }}
+    {% if icon_right %}{{ icon_right|safe }}{% endif %}
+  </a>
+{% else %}
+  <button 
+    type="{% if is_submit %}submit{% else %}button{% endif %}"
+    class="
+      inline-flex items-center justify-center
+      {% if size == 'sm' %}px-3 py-1.5 text-sm{% elif size == 'lg' %}px-6 py-3 text-lg{% else %}px-4 py-2 text-base{% endif %}
+      font-medium rounded-md
+      {% if type == 'primary' %}bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500{% elif type == 'secondary' %}bg-gray-200 hover:bg-gray-300 text-gray-800 focus:ring-gray-500{% elif type == 'outline' %}bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 focus:ring-blue-500{% elif type == 'danger' %}bg-red-600 hover:bg-red-700 text-white focus:ring-red-500{% else %}bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500{% endif %}
+      focus:outline-none focus:ring-2 focus:ring-offset-2
+      {% if full_width %}w-full{% endif %}
+      {% if disabled %}opacity-50 cursor-not-allowed{% endif %}
+      {{ extra_classes|default:'' }}
+    "
+    {% if disabled %}disabled{% endif %}
+    {% for key, value in attrs.items %}
+      {{ key }}="{{ value }}"
+    {% endfor %}
+  >
+    {% if icon_left %}{{ icon_left|safe }}{% endif %}
+    {{ text }}
+    {% if icon_right %}{{ icon_right|safe }}{% endif %}
+  </button>
+{% endif %}

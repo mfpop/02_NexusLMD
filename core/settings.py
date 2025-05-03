@@ -133,7 +133,10 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
+# Authentication settings
+LOGIN_REDIRECT_URL = 'auth:profile'  # Using the named URL pattern instead of hardcoded path
+LOGIN_URL = 'auth:login'  # Fixing the login URL name
+LOGOUT_REDIRECT_URL = 'auth:login'  # Adding explicit logout redirect
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
