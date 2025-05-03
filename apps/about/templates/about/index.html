@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <!-- About Hero Section -->
+  <section class="py-12">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-4xl md:text-5xl font-righteous text-green-600 mb-6">About NexusLMD</h1>
+
+      <div class="bg-bg-tertiary p-6 rounded-lg border-l-4 border-green-400 mb-8">
+        <p class="text-text-secondary text-lg">NexusLMD is a comprehensive platform designed to transform how organizations track, analyze, and optimize their production metrics and team communications.</p>
+      </div>
+
+      <p class="text-text-primary mb-6">Founded in 2023, our mission is to provide businesses with intuitive tools that improve operational efficiency while maintaining a modern, readable interface design that puts user experience first.</p>
+    </div>
+  </section>
+
+  <!-- Our Values Section -->
+  <section class="py-12 bg-bg-tertiary rounded-lg">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-righteous text-green-600 mb-8 text-center">Our Values</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Value 1 -->
+        {% include 'components/cards.html' with title='User-Centered Design' content='We believe software should be intuitive and accessible, putting user needs at the forefront of every design decision.' highlight=True %}
+
+        <!-- Value 2 -->
+        {% include 'components/cards.html' with title='Data-Driven Insights' content='Our platform transforms raw data into actionable insights, helping organizations make informed decisions.' highlight=True %}
+
+        <!-- Value 3 -->
+        {% include 'components/cards.html' with title='Seamless Communication' content='We break down communication barriers within organizations, creating pathways for collaboration across departments.' highlight=True %}
+
+        <!-- Value 4 -->
+        {% include 'components/cards.html' with title='Continuous Innovation' content="We're committed to evolving our platform with cutting-edge technologies and responsive features." highlight=True %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section class="py-12">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-righteous text-green-600 mb-8 text-center">Our Team</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Team Member 1 -->
+        <div class="text-center">
+          <div class="w-40 h-40 rounded-full bg-gray-200 mx-auto mb-4"></div>
+          <h3 class="text-xl font-semibold text-text-primary">Jane Doe</h3>
+          <p class="text-text-secondary">CEO & Founder</p>
+        </div>
+
+        <!-- Team Member 2 -->
+        <div class="text-center">
+          <div class="w-40 h-40 rounded-full bg-gray-200 mx-auto mb-4"></div>
+          <h3 class="text-xl font-semibold text-text-primary">John Smith</h3>
+          <p class="text-text-secondary">CTO</p>
+        </div>
+
+        <!-- Team Member 3 -->
+        <div class="text-center">
+          <div class="w-40 h-40 rounded-full bg-gray-200 mx-auto mb-4"></div>
+          <h3 class="text-xl font-semibold text-text-primary">Sarah Johnson</h3>
+          <p class="text-text-secondary">Lead Designer</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline Section -->
+  <section class="py-12 bg-bg-tertiary rounded-lg">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-righteous text-green-600 mb-8 text-center">Our Journey</h2>
+
+      <div class="space-y-12">
+        <!-- Timeline Item 1 -->
+        <div class="flex">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-green-400 flex items-center justify-center text-text-light font-bold">1</div>
+          <div class="ml-4">
+            <h3 class="text-xl font-semibold text-text-primary">2023 - Foundation</h3>
+            <p class="text-text-secondary mt-2">NexusLMD was established with the goal of revolutionizing production metrics tracking.</p>
+          </div>
+        </div>
+
+        <!-- Timeline Item 2 -->
+        <div class="flex">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-green-400 flex items-center justify-center text-text-light font-bold">2</div>
+          <div class="ml-4">
+            <h3 class="text-xl font-semibold text-text-primary">2024 - Platform Launch</h3>
+            <p class="text-text-secondary mt-2">Our platform officially launched, bringing intuitive metrics tracking to organizations worldwide.</p>
+          </div>
+        </div>
+
+        <!-- Timeline Item 3 -->
+        <div class="flex">
+          <div class="flex-shrink-0 w-12 h-12 rounded-full bg-green-400 flex items-center justify-center text-text-light font-bold">3</div>
+          <div class="ml-4">
+            <h3 class="text-xl font-semibold text-text-primary">2025 - Design Overhaul</h3>
+            <p class="text-text-secondary mt-2">We reimagined our design with a focus on readability and modern aesthetics.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-12 mt-12">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl font-righteous text-green-600 mb-6">Join Our Journey</h2>
+      <p class="text-text-secondary text-lg mb-8">Ready to transform how your organization handles production metrics?</p>
+      <div class="flex justify-center gap-4">
+        {% include 'components/buttons.html' with type='primary' text='Get Started' url='/authenticate/register' classes='px-8 py-3' %}
+        {% include 'components/buttons.html' with type='secondary' text='Contact Us' url='/contact' classes='px-8 py-3' %}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="py-12 bg-bg-tertiary rounded-lg my-12">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-righteous text-green-600 mb-8 text-center">Frequently Asked Questions</h2>
+
+      <div class="space-y-6">
+        <!-- FAQ Item 1 -->
+        <div class="bg-bg-primary p-6 rounded-lg border border-gray-200 elevated">
+          <h3 class="text-xl font-semibold text-text-primary">How does NexusLMD improve production efficiency?</h3>
+          <p class="text-text-secondary mt-2">By providing real-time metrics and analysis, organizations can identify bottlenecks and optimize their workflows.</p>
+        </div>
+
+        <!-- FAQ Item 2 -->
+        <div class="bg-bg-primary p-6 rounded-lg border border-gray-200 elevated">
+          <h3 class="text-xl font-semibold text-text-primary">Is NexusLMD suitable for small businesses?</h3>
+          <p class="text-text-secondary mt-2">Absolutely! Our platform scales with your business, providing value to organizations of all sizes.</p>
+        </div>
+
+        <!-- FAQ Item 3 -->
+        <div class="bg-bg-primary p-6 rounded-lg border border-gray-200 elevated">
+          <h3 class="text-xl font-semibold text-text-primary">How secure is the platform?</h3>
+          <p class="text-text-secondary mt-2">Security is our priority. We employ industry-standard encryption and regular security audits to protect your data.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% load static %}
+<!-- Search Component - Parent container for search functionality -->
+<div x-data="{ 
+    searchActive: false,
+    init() {
+        // Handle clicks outside of search row to dismiss it
+        const self = this;
+        document.addEventListener('click', (e) => {
+            const searchOptions = document.getElementById('search-options');
+            const searchContent = document.getElementById('search-options-content');
+            const searchButton = document.getElementById('search-button');
+            if (self.searchActive && searchOptions && 
+                !searchOptions.contains(e.target) && 
+                !searchButton.contains(e.target)) {
+                self.searchActive = false;
+                if (searchContent) searchContent.innerHTML = '';
+            }
+        });
+    } 
+}">
+    <div class="flex items-center space-x-2">
+        <!-- Search button -->
+        <div id="search-button" x-show="!searchActive">
+            <button 
+                @click="searchActive = true"
+                hx-trigger="click"
+                hx-get="{% url 'home:search_options' %}"
+                hx-target="#search-options-content"
+                hx-swap="innerHTML"
+                hx-vals='{"current_title": "{{ title }}"}' 
+                class="text-soft-green-bright hover:text-lime-yellow transition-all duration-300 flex items-center relative group p-1">
+                <img src="{% static 'images/icons/search.svg' %}" alt="Search" class="h-5 w-5 transform group-hover:scale-110 transition-transform duration-300">
+                <span class="absolute bottom-[-20px] left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-xs bg-lime-yellow/90 text-soft-green-dark px-2 py-1 rounded whitespace-nowrap z-10">Search</span>
+            </button>
+        </div>
+        
+        <!-- Clear Search button (shown only when search is active) -->
+        <div x-show="searchActive" x-cloak>
+            <button 
+                @click="searchActive = false"
+                hx-trigger="click"
+                hx-get="{% url 'home:clear_search' %}"
+                hx-target="#main-content-inner"
+                hx-indicator="#loading-indicator"
+                class="text-lime-yellow hover:text-soft-green-bright transition-all duration-300 flex items-center relative group p-1">
+                <img src="{% static 'images/icons/search.svg' %}" alt="Clear Search" class="h-5 w-5 transform group-hover:scale-110 transition-transform duration-300">
+                <span class="absolute bottom-[-20px] left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-xs bg-lime-yellow/90 text-soft-green-dark px-2 py-1 rounded whitespace-nowrap z-10">Clear Search</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Search options container - Will be filled by HTMX -->
+    <div id="search-options" 
+         class="bg-light-beige shadow-sm overflow-hidden absolute left-0 right-0 z-10"
+         x-show="searchActive"
+         x-transition:enter="transition-all duration-300 ease-out" 
+         x-transition:enter-start="opacity-0 max-h-0" 
+         x-transition:enter-end="opacity-100 max-h-24" 
+         x-transition:leave="transition-all duration-300 ease-in" 
+         x-transition:leave-start="opacity-100 max-h-24" 
+         x-transition:leave-end="opacity-0 max-h-0">
+         <div id="search-options-content"></div>
+    </div>
+</div>

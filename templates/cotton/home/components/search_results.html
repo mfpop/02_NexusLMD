@@ -1,0 +1,27 @@
+{% if query %}
+    <div class="p-4">
+        {% if results %}
+            <h2 class="font-righteous text-soft-green-dark text-lg mb-4">Search results for "{{ query }}"</h2>
+            <div class="space-y-4">
+                {% for result in results %}
+                    <div class="bg-white/70 p-3 rounded-md shadow-sm hover:shadow transition-all duration-300">
+                        <h3 class="font-righteous text-soft-green-bright">{{ result.title }}</h3>
+                        <p class="text-sm text-soft-green-dark/80">{{ result.description }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-8">
+                <p class="text-soft-green-dark/70">No results found for "{{ query }}"</p>
+                <p class="text-sm text-soft-green-dark/50 mt-2">Try a different search term or browse all content</p>
+            </div>
+        {% endif %}
+    </div>
+{% else %}
+    <!-- If no query is provided, display default content -->
+    <div class="p-4">
+        <div class="text-center py-6">
+            <p class="text-soft-green-dark/70">Type in the search box to find content</p>
+        </div>
+    </div>
+{% endif %}

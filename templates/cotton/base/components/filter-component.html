@@ -1,0 +1,64 @@
+{% load static %}
+<!-- Filter Component - Parent container for filter functionality -->
+<div x-data="{ 
+    filterActive: false,
+    init() {
+        // Handle clicks outside of filter row to dismiss it
+        const self = this;
+        document.addEventListener('click', (e) => {
+            const filterOptions = document.getElementById('filter-options');
+            const filterContent = document.getElementById('filter-options-content');
+            const filterButton = document.getElementById('filter-button');
+            if (self.filterActive && filterOptions && 
+                !filterOptions.contains(e.target) && 
+                !filterButton.contains(e.target)) {
+                self.filterActive = false;
+                if (filterContent) filterContent.innerHTML = '';
+            }
+        });
+    } 
+}">
+    <div class="flex items-center space-x-2">
+        <!-- Filter button -->
+        <div id="filter-button" x-show="!filterActive">
+            <button 
+                @click="filterActive = true"
+                hx-trigger="click"
+                hx-get="{% url 'home:filter' %}"
+                hx-target="#filter-options-content"
+                hx-swap="innerHTML"
+                hx-vals='{"current_title": "{{ title }}"}'
+                class="text-soft-green-bright hover:text-lime-yellow transition-all duration-300 flex items-center relative group p-1">
+                <img src="{% static 'images/icons/filter.svg' %}" alt="Filter" class="h-5 w-5 transform group-hover:scale-110 transition-transform duration-300">
+                <span class="absolute bottom-[-20px] left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-xs bg-lime-yellow/90 text-soft-green-dark px-2 py-1 rounded whitespace-nowrap z-10">Filter</span>
+            </button>
+        </div>
+        
+        <!-- Clear Filter button (shown only when filter is active) -->
+        <div x-show="filterActive" x-cloak>
+            <button 
+                @click="filterActive = false"
+                hx-trigger="click"
+                hx-get="{% url 'home:clear_filter' %}"
+                hx-target="#main-content-inner"
+                hx-indicator="#loading-indicator"
+                class="text-lime-yellow hover:text-soft-green-bright transition-all duration-300 flex items-center relative group p-1">
+                <img src="{% static 'images/icons/clear-filter.svg' %}" alt="Clear Filter" class="h-5 w-5 transform group-hover:scale-110 transition-transform duration-300">
+                <span class="absolute bottom-[-20px] left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-xs bg-lime-yellow/90 text-soft-green-dark px-2 py-1 rounded whitespace-nowrap z-10">Clear Filter</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Filter options container - Will be filled by HTMX -->
+    <div id="filter-options" 
+         class="bg-light-beige shadow-sm overflow-hidden absolute left-0 right-0 z-10"
+         x-show="filterActive"
+         x-transition:enter="transition-all duration-300 ease-out" 
+         x-transition:enter-start="opacity-0 max-h-0" 
+         x-transition:enter-end="opacity-100 max-h-24" 
+         x-transition:leave="transition-all duration-300 ease-in" 
+         x-transition:leave-start="opacity-100 max-h-24" 
+         x-transition:leave-end="opacity-0 max-h-0">
+         <div id="filter-options-content"></div>
+    </div>
+</div>

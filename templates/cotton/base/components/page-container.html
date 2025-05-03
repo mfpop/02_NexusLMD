@@ -1,0 +1,16 @@
+{% comment %}
+    Base page container template
+    This template serves as the foundation for all app pages,
+    ensuring that page title information is consistently available
+    for the top menu title updates.
+{% endcomment %}
+
+{% if title %}
+<meta name="page-title" content="{{ title }}">
+{% endif %}
+
+<div class="p-4 h-full">
+    {% block page_content %}
+        {{ content|safe }}
+    {% endblock %}
+</div>

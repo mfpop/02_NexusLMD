@@ -1,18 +1,152 @@
 <c-base.base>
 <c-slot name="title">Home</c-slot>
 <c-slot name="content">
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-righteous text-dark-brown mb-4"><c->Welcome to Our Application</c-></h1>
-        <p class="text-lg text-medium-brown"><c->This is the home page of our application.</c-></p>
-        <div class="mt-6">
-            <h2 class="text-2xl font-righteous text-dark-brown mb-3"><c->Features</c-></h2>
-            <ul class="list-disc pl-5 text-medium-brown">
-                <li><c->Responsive design</c-></li>
-                <li><c->Django-cotton theme integration</c-></li>
-                <li><c->Modern UI components</c-></li>
-            </ul>
+<div class="h-full grid grid-rows-[auto_1fr] gap-10  p-6">
+    <!-- Top Row: Welcome & Stats in Compact Layout -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 ">
+        <!-- Welcome Message (Simplified) -->
+        <div class="md:col-span-1 bg-bg-primary p-2.5 rounded-lg border border-blue-100 shadow-blue flex flex-col justify-between min-h-[120px]">
+            <div class="bg-gradient-to-r from-blue-500 to-indigo-600 p-4 rounded-lg shadow-lg text-white">
+                <h1 class="text-xl font-bold font-righteous">Welcome</h1>
+                <p class="text-sm mt-2">
+                    Managing production metrics with a modern, readable design.
+                </p>
+                <div class="mt-4 flex gap-2">
+                    <a href="/authenticate/register" class="bg-white text-blue-600 font-semibold px-3 py-1 rounded hover:bg-gray-100 text-sm">
+                        Get Started
+                    </a>
+                    <a href="/about" class="bg-blue-700 hover:bg-blue-800 text-white px-3 py-1 rounded text-sm">
+                        Learn More
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Stats Cards (Compact and Subtle Colors) -->
+        <div class="md:col-span-2 bg-white px-3 py-1 rounded-lg border-2 border-blue-50">
+            <div class="grid grid-cols-3 items-center h-full gap-3">
+            <div class="bg-gray-100 p-1 rounded-md shadow-sm text-center text-gray-700 border border-gray-200 transform transition-all duration-300 hover:scale-105 hover:shadow-md relative overflow-hidden group">
+                <div class="absolute top-0 left-0 p-1 bg-gray-200 rounded-br-md">
+                <span class="text-sm font-bold text-gray-600">📈</span>
+                </div>
+                <div class="text-xl font-semibold relative z-10">98%</div>
+                <div class="text-xs uppercase relative z-10">Uptime</div>
+            </div>
+            <div class="bg-gray-100 p-1 rounded-md shadow-sm text-center text-gray-700 border border-gray-200 transform transition-all duration-300 hover:scale-105 hover:shadow-md relative overflow-hidden group">
+                <div class="absolute top-0 left-0 p-1 bg-gray-200 rounded-br-md">
+                <span class="text-sm font-bold text-gray-600">🏭</span>
+                </div>
+                <div class="text-xl font-semibold relative z-10">24.5K</div>
+                <div class="text-xs uppercase relative z-10">
+                    Production
+                </div>
+            </div>
+            <div class="bg-gray-100 p-1 rounded-md shadow-sm text-center text-gray-700 border border-gray-200 transform transition-all duration-300 hover:scale-105 hover:shadow-md relative overflow-hidden group">
+                <div class="absolute top-0 left-0 p-1 bg-gray-200 rounded-br-md">
+                <span class="text-sm font-bold text-gray-600">👥</span>
+                </div>
+                <div class="text-xl font-semibold relative z-10">15</div>
+                <div class="text-xs uppercase relative z-10">Teams</div>
+            </div>
+            <div class="bg-gray-100 p-1 rounded-md shadow-sm text-center text-gray-700 border border-gray-200 transform transition-all duration-300 hover:scale-105 hover:shadow-md relative overflow-hidden group">
+                <div class="absolute top-0 left-0 p-1 bg-gray-200 rounded-br-md">
+                    <span class="text-sm font-bold text-gray-600">⏱️</span>
+                </div>
+                <div class="text-xl font-semibold relative z-10">85%</div>
+                <div class="text-xs uppercase relative z-10">On-Time Delivery</div>
+            </div>
+            <div class="bg-gray-100 p-1 rounded-md shadow-sm text-center text-gray-700 border border-gray-200 transform transition-all duration-300 hover:scale-105 hover:shadow-md relative overflow-hidden group">
+                <div class="absolute top-0 left-0 p-1 bg-gray-200 rounded-br-md">
+                    <span class="text-sm font-bold text-gray-600">⚙️</span>
+                </div>
+                <div class="text-xl font-semibold relative z-10">92%</div>
+                <div class="text-xs uppercase relative z-10">Machine Utilization</div>
+            </div>
+            <div class="bg-gray-100 p-1 rounded-md shadow-sm text-center text-gray-700 border border-gray-200 transform transition-all duration-300 hover:scale-105 hover:shadow-md relative overflow-hidden group">
+                <div class="absolute top-0 left-0 p-1 bg-gray-200 rounded-br-md">
+                    <span class="text-sm font-bold text-gray-600">📦</span>
+                </div>
+                <div class="text-xl font-semibold relative z-10">5%</div>
+                <div class="text-xs uppercase relative z-10">Defect Rate</div>
+            </div>
+            </div>
         </div>
     </div>
+
+    <!-- Middle Row: Features & Activity in Two Columns -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mx-2 max-h-[calc(100vh-180px)]"> 
+        <!-- Left Column: Features -->
+        <div class="min-h-0 max-h-full flex flex-col overflow-hidden">
+            <div class="flex justify-between items-center mb-1">
+                <h2 class="text-sm font-righteous text-blue-500">Key Features</h2>
+            </div>
+            <div class="grid grid-cols-1 gap-1 overflow-y-auto pr-1 flex-1 h-0"> <!-- Added h-0 to ensure proper scrolling -->
+                <div class="bg-bg-tertiary p-2 rounded border-l-4 border-blue-500">
+                    <h3 class="text-sm font-semibold">Production Analytics</h3>
+                    <p class="text-text-secondary text-xs truncate">Real-time analytics and customizable dashboards.</p>
+                    <ul class="list-disc list-inside mt-1 text-[10px] text-text-secondary space-y-1">
+                        <li>Track production efficiency in real-time.</li>
+                        <li>Generate detailed reports with one click.</li>
+                        <li>Customize dashboards to suit your needs.</li>
+                    </ul>
+                </div>
+                <div class="bg-bg-tertiary p-2 rounded border-l-4 border-blue-500">
+                    <h3 class="text-sm font-semibold">Team Collaboration</h3>
+                    <p class="text-text-secondary text-sm truncate">Streamline workflows with integrated collaboration.</p>
+                    <ul class="list-disc list-inside mt-1 text-[10px] text-text-secondary space-y-1">
+                        <li>Share files and updates in real-time.</li>
+                        <li>Assign tasks and monitor progress effortlessly.</li>
+                        <li>Enhance communication with built-in messaging tools.</li>
+                    </ul>
+                </div>
+                <div class="bg-bg-tertiary p-2 rounded border-l-4 border-blue-500">
+                    <h3 class="text-sm font-semibold">Performance Tracking</h3>
+                    <p class="text-text-secondary text-sm truncate">Set goals and track progress with metrics.</p>
+                    <ul class="list-disc list-inside mt-1 text-[10px] text-text-secondary space-y-1">
+                        <li>Define clear objectives for your team.</li>
+                        <li>Monitor key performance indicators (KPIs).</li>
+                        <li>Analyze trends to improve efficiency.</li>
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+        
+        <!-- Right Column: Recent Activity -->
+        <div class="min-h-0 flex flex-col overflow-hidden">
+            <div class="flex justify-between items-center mb-1">
+                <h2 class="text-sm font-righteous text-blue-500">Recent Activity</h2>
+                <a href="/activities" class="text-blue-500 hover:text-blue-700 text-[10px]">View all →</a>
+            </div>
+            <div class="bg-bg-primary rounded border border-blue-100 shadow-blue overflow-y-auto pr-1 flex-1">
+                <ul class="divide-y divide-blue-50">
+                    <li class="p-1 flex justify-between">
+                        <div>
+                            <p class="text-text-primary text-xs truncate">Production target reached</p>
+                            <p class="text-text-tertiary text-[10px] truncate">Production Department</p>
+                        </div>
+                        <span class="text-text-tertiary text-[10px]">2h ago</span>
+                    </li>
+                    <li class="p-1 flex justify-between">
+                        <div>
+                            <p class="text-text-primary text-xs truncate">New team member added</p>
+                            <p class="text-text-tertiary text-[10px] truncate">Human Resources</p>
+                        </div>
+                        <span class="text-text-tertiary text-[10px]">Yesterday</span>
+                    </li>
+                    <li class="p-1 flex justify-between">
+                        <div>
+                            <p class="text-text-primary text-xs truncate">System maintenance done</p>
+                            <p class="text-text-tertiary text-[10px] truncate">IT Department</p>
+                        </div>
+                        <span class="text-text-tertiary text-[10px]">3d ago</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
 </c-slot>
 </c-base.base>
 

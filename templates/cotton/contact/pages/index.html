@@ -1,7 +1,144 @@
 <c-base.base>
-<c-slot name="title">Contact</c-slot>
+<c-slot name="title">Contact Us</c-slot>
 <c-slot name="content">
-    <h1>Contact Us</h1>
-    <p>Get in touch with our team through this contact page.</p>
-</c-slot>
+  <!-- Contact Hero Section -->
+  <section class="py-12">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-4xl md:text-5xl font-righteous text-blue-600 mb-6">Contact Us</h1>
+
+      <div class="bg-sky-50 p-6 rounded-lg border-l-4 border-blue-400 mb-8">
+        <p class="text-text-secondary text-lg">Have questions about NexusLMD? Our team is here to help you get the most out of our platform.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Information -->
+  <section class="py-8">
+    <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Address -->
+      <div class="bg-bg-primary p-6 rounded-lg border border-gray-200 text-center elevated">
+        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <span class="text-blue-500 text-xl">📍</span>
+        </div>
+        <h3 class="text-xl font-semibold text-text-primary mb-2">Address</h3>
+        <p class="text-text-secondary">
+          210 Roll Drive<br />
+          San Diego, CA 92154<br />
+          United States
+        </p>
+      </div>
+
+      <!-- Email -->
+      <div class="bg-bg-primary p-6 rounded-lg border border-gray-200 text-center elevated">
+        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <span class="text-blue-500 text-xl">✉️</span>
+        </div>
+        <h3 class="text-xl font-semibold text-text-primary mb-2">Email</h3>
+        <p class="text-text-secondary mb-2">For general inquiries:</p>
+        <a href="mailto:info@nexuslmd.com" class="text-accent-purple hover:text-accent-purple-dark">info@nexuslmd.com</a>
+      </div>
+
+      <!-- Phone -->
+      <div class="bg-bg-primary p-6 rounded-lg border border-gray-200 text-center elevated">
+        <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <span class="text-blue-500 text-xl">📞</span>
+        </div>
+        <h3 class="text-xl font-semibold text-text-primary mb-2">Phone</h3>        
+        <p class="text-text-secondary mt-2 mb-2">Technical Support:</p>
+        <a href="tel:+1-555-987-6543" class="text-accent-purple hover:text-accent-purple-dark">+1 (619) 617-2230</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Form Section -->
+  <section class="py-12 bg-sky-50 rounded-lg my-12">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-3xl font-righteous text-blue-600 text-center mb-8">Send Us a Message</h2>
+
+      <!-- Success Message (conditionally displayed) -->
+      {% if message_sent %}
+        {% include 'components/alerts.html' with type='success' message="Thank you! Your message has been sent successfully. We'll get back to you shortly." %}
+      {% endif %}
+
+      <div class="bg-bg-primary p-8 rounded-lg border border-gray-200 elevated">
+        <form action="/contact/submit/" method="post" class="space-y-6">
+          {% csrf_token %}
+
+          <!-- Name Field -->
+          {% include 'components/forms.html' with type='text' name='name' label='Full Name' placeholder='Enter your full name' required=True error=errors.name %}
+
+          <!-- Email Field -->
+          {% include 'components/forms.html' with type='email' name='email' label='Email Address' placeholder='Enter your email address' required=True error=errors.email %}
+
+          <!-- Phone Field -->
+          {% include 'components/forms.html' with type='text' name='phone' label='Phone Number' placeholder='Enter your phone number (optional)' help_text='Format: +1 (619) 617-2230' %}
+
+          <!-- Subject Field -->
+          {% include 'components/forms.html' with type='select' name='subject' label='Subject' placeholder='Please select a subject' required=True options=subject_options error=errors.subject %}
+
+          <!-- Message Field -->
+          {% include 'components/forms.html' with type='textarea' name='message' label='Message' placeholder='Enter your message here...' rows=6 required=True error=errors.message %}
+
+          <!-- Consent Checkbox -->
+          <div class="flex items-start">
+            <div class="flex items-center h-5">
+              <input id="consent" name="consent" type="checkbox" required class="h-4 w-4 text-blue-500 focus:ring-blue-400 border-gray-300 rounded" />
+            </div>
+            <div class="ml-3">
+              <label for="consent" class="text-text-secondary">I agree that my submitted data is being collected and stored. For details on how we use your information, please see our <a href="/privacy-policy" class="text-accent-purple hover:text-accent-purple-dark">Privacy Policy</a>.</label>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="flex justify-end">
+            {% include 'components/buttons.html' with type='primary' text='Send Message' is_submit=True %}
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Map Section -->
+  <section class="py-12">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-righteous text-blue-600 text-center mb-8">Our Location</h2>
+
+      <div class="bg-gray-200 rounded-lg h-64 w-full flex items-center justify-center">
+        <p class="text-text-tertiary">Interactive map would be displayed here</p>
+      </div>
+
+      <div class="mt-8 text-center">
+        <p class="text-text-secondary mb-4">Business Hours: Monday - Friday, 9am - 5pm PST</p>
+        {% include 'components/buttons.html' with type='secondary' text='Get Directions' url='#' %}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="py-12 bg-sky-50 rounded-lg my-12">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-3xl font-righteous text-blue-600 mb-8 text-center">Contact FAQs</h2>
+
+      <div class="space-y-6">
+        <!-- FAQ Item 1 -->
+        <div class="bg-bg-primary p-6 rounded-lg border border-gray-200 elevated">
+          <h3 class="text-xl font-semibold text-text-primary">What is the typical response time?</h3>
+          <p class="text-text-secondary mt-2">We strive to respond to all inquiries within 24-48 business hours.</p>
+        </div>
+
+        <!-- FAQ Item 2 -->
+        <div class="bg-bg-primary p-6 rounded-lg border border-gray-200 elevated">
+          <h3 class="text-xl font-semibold text-text-primary">Do you offer phone support?</h3>
+          <p class="text-text-secondary mt-2">Yes, our customer service team is available Monday through Friday from 9am to 5pm PST.</p>
+        </div>
+
+        <!-- FAQ Item 3 -->
+        <div class="bg-bg-primary p-6 rounded-lg border border-gray-200 elevated">
+          <h3 class="text-xl font-semibold text-text-primary">How can I request a demo?</h3>
+          <p class="text-text-secondary mt-2">You can request a demo by selecting "Request Demo" from the subject dropdown in our contact form above.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</c-slot name="content">
 </c-base.base>

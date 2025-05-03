@@ -1,133 +1,97 @@
 {% load static tailwind_tags %}
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus LMD | {{ title }}</title>
+<html lang="en" class="h-full">
+  <head>
     {% tailwind_css %}
-    <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
-    <link rel="stylesheet" href="{% static 'fonts/fonts.css' %}">
-    <link rel="stylesheet" href="{% static 'css/buttons.css' %}">
-    
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nexus LMD | {{ title }}</title>
     <!-- Alpine.js -->
     <script defer src="{% static 'js/lib/alpine.min.js' %}"></script>
     
     <!-- htmx -->
     <script src="{% static 'js/lib/htmx.min.js' %}"></script>
-    
-    <c-slot name="head">{{extra_head}}</c-slot>
-</head>
-<body class="bg-cream-white font-lora"
-      x-data="{ 
-          pageLoading: false,
-          animations: {
-              spin: 'to { transform: rotate(360deg); }',
-              fadeInUp: 'from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); }',
-          },
-          init() {
-              // Add keyframe animations (can't be inline)
-              const style = document.createElement('style');
-              style.textContent = `
-                  @keyframes spin { ${this.animations.spin} }
-                  @keyframes fadeInUp { ${this.animations.fadeInUp} }
-                  [x-cloak] { display: none !important; }
-                  .htmx-settling .fade-transition { transition: opacity 0.3s ease-out, transform 0.3s ease-out; }
-                  .htmx-request .htmx-indicator { opacity: 1; }
-              `;
-              document.head.appendChild(style);
-              
-              // Set up Alpine store
-              Alpine.store('pageLoading', false);
-              
-              // Listen for htmx events using Alpine
-              this.$el.addEventListener('htmx:beforeRequest', () => {
-                  Alpine.store('pageLoading', true);
-                  this.pageLoading = true;
-              });
-              
-              this.$el.addEventListener('htmx:afterRequest', () => {
-                  Alpine.store('pageLoading', false);
-                  this.pageLoading = false;
-              });
-              
-              this.$el.addEventListener('htmx:beforeSwap', (evt) => {
-                  const mainContent = document.getElementById('main-content');
-                  if (mainContent) {
-                      mainContent.style.animation = 'none';
-                      mainContent.style.opacity = '0';
-                      mainContent.style.transform = 'translateY(10px)';
-                      mainContent.offsetWidth; // Force reflow
-                  }
-              });
-              
-              this.$el.addEventListener('htmx:afterSwap', () => {
-                  const mainContent = document.getElementById('main-content');
-                  if (mainContent) {
-                      mainContent.style.animation = 'fadeInUp 0.3s ease-out forwards';
-                  }
-                  
-                  // Re-initialize Alpine components in new content
-                  if (Alpine) {
-                      Alpine.initTree(document.getElementById('main-content'));
-                  }
-              });
-          },
-          get isLoading() {
-              return Alpine.store('pageLoading');
-          },
-          set isLoading(value) {
-              Alpine.store('pageLoading', value);
-              this.$el.style.cursor = value ? 'wait' : 'default';
-          }
-      }"
-      x-effect="isLoading ? $el.style.cursor = 'wait' : $el.style.cursor = 'default'">
-    <div class="grid grid-rows-[40px_1fr] grid-cols-[70px_1fr] min-h-screen overflow-hidden">
-        <!-- Sidebar -->
-        <aside class="h-screen bg-light-beige shadow-md row-span-2 z-20">
-            {% include 'cotton/base/sidebar.html' %}
-        </aside>
-        
-        <!-- Top menu -->
-        <header class="bg-light-beige border-b border-gray-200 z-10 col-start-2 col-span-1 row-start-1">
-            {% include 'cotton/base/topmenu.html' %}
-        </header>
-        
-        <!-- Main content wrapper -->
-        <div id="main_content" class="col-start-2 row-start-2 overflow-hidden p-2 bg-cream-white relative">
-            <!-- Loading indicator -->
-            <div id="loading-indicator" 
-                 class="absolute inset-0 flex items-center justify-center z-30 bg-cream-white bg-opacity-70 opacity-0 transition-opacity duration-300 ease-in-out htmx-indicator" 
-                 x-show="pageLoading" 
-                 x-transition:enter="transition ease-out duration-300"
-                 x-transition:enter-start="opacity-0"
-                 x-transition:enter-end="opacity-100"
-                 x-transition:leave="transition ease-in duration-300"
-                 x-transition:leave-start="opacity-100"
-                 x-transition:leave-end="opacity-0"
-                 x-cloak>
-                <div class="rounded-full h-10 w-10 border-b-2 border-soft-green-dark" style="animation: spin 1s linear infinite;"></div>
-            </div>
-            
-            <!-- Main content -->
-            <div class="h-full">
-                <main class="bg-gray-200 bg-opacity-50 rounded-lg w-full h-full overflow-auto transition-all duration-300 ease-out fade-transition" 
-                      id="main-content"
-                      hx-boost="true"
-                      hx-select="#main-content-inner"
-                      hx-target="#main-content"
-                      hx-swap="innerHTML"
-                      hx-push-url="true"
-                      hx-indicator="#loading-indicator"
-                      style="opacity: 0; transform: translateY(10px); animation: fadeInUp 0.3s ease-out forwards;">
-                    <div id="main-content-inner" class="flex flex-col justify-start h-full p-4">
-                        {{ content }}
+  </head>
+  <body class="h-full font-lora text-text-primary text-readable w-full overflow-hidden">
+    <div class="h-screen grid grid-cols-[70px_1fr] overflow-hidden">
+      <!-- Left Sidebar - Made narrower -->
+      <div class="sidebar flex flex-col items-center shadow-md bg-blue-300/10 h-full w-full text-gray-600 overflow-hidden">
+        <c-base.leftsb/>
+      </div>
+      
+      <!-- Main Content Area -->
+      <div class="main_content grid grid-rows-[40px_1fr] h-full w-full">
+        <!-- Top Header Bar - Made shorter -->
+        <div class="grid grid-cols-[25%_35%_1fr] w-full bg-bg-tertiary shadow-sm pl-4 pr-2 py-0.5 sticky top-0 z-10 items-center gap-2 border-b border-blue-200">
+            <div id="page_title" class="font-bold font-righteous text-blue-500 text-sm">{{ title }}</div>
+          
+          <!-- System Messages Component - Simplified for space -->
+          <div id="messages-container" class="w-full max-w-full">
+            {% if messages %}
+              <div class="messages-wrapper flex flex-col space-y-1 max-h-12 overflow-y-auto">
+                {% for message in messages %}
+                  <div x-data="{ show: true }"
+                       x-show="show" 
+                       x-transition:enter="transition ease-out duration-300"
+                       x-transition:enter-start="opacity-0 transform translate-y-2"
+                       x-transition:enter-end="opacity-100 transform translate-y-0"
+                       x-transition:leave="transition ease-in duration-200"
+                       x-transition:leave-start="opacity-100 transform translate-y-0"
+                       x-transition:leave-end="opacity-0 transform translate-y-2"
+                       class="flex items-center justify-between py-1 px-2 rounded-md text-xs 
+                       {% if message.tags == 'success' %}bg-blue-50 text-blue-500 border border-blue-400
+                       {% elif message.tags == 'error' %}bg-blue-100 text-blue-600 border border-blue-600
+                       {% elif message.tags == 'warning' %}bg-blue-50 text-blue-400 border border-blue-400
+                       {% elif message.tags == 'info' %}bg-blue-50 text-blue-300 border border-blue-300
+                       {% else %}bg-bg-tertiary text-text-secondary border border-blue-100
+                       {% endif %}">
+                    <div class="flex items-center">
+                      <span class="mr-1">
+                        {% if message.tags == 'success' %}
+                          <svg class="w-3 h-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        {% elif message.tags == 'error' %}
+                          <svg class="w-3 h-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        {% elif message.tags == 'warning' %}
+                          <svg class="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        {% elif message.tags == 'info' %}
+                          <svg class="w-3 h-3 text-blue-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        {% else %}
+                          <svg class="w-3 h-3 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        {% endif %}
+                      </span>
+                      {{ message }}
                     </div>
-                </main>
-            </div>
+                    <button @click="show = false" class="text-text-tertiary hover:text-text-secondary ml-1 focus:outline-none">
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                  </div>
+                {% endfor %}
+              </div>
+              <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                  setTimeout(function() {
+                    const messagesContainer = document.querySelectorAll('#messages-container [x-show="show"]');
+                    messagesContainer.forEach(function(message) {
+                      message.__x.$data.show = false;
+                    });
+                  }, 5000);
+                });
+              </script>
+            {% endif %}
+          </div>
+          
+          <!-- Top menu buttons -->
+          <div id="top_menu" class="flex justify-end">{{ top_menu }}</div>
         </div>
+        
+        <!-- Main Content Container - Fixed height calculation to match the grid exactly -->
+        <div class="bg-bg-secondary overflow-hidden rounded-md h-[calc(100vh-40px)]">
+          <div class="bg-bg-primary rounded-md border border-blue-100 shadow-blue h-full overflow-hidden">
+            {{ content }}
+          </div>
+        </div>
+      </div>
     </div>
-    {{ extra_js }}
-</body>
+  </body>
 </html>

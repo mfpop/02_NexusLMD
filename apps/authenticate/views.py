@@ -5,7 +5,7 @@ from django.shortcuts import redirect, render
 
 def index(request):
     """Index view for the authentication app."""
-    return render(request, 'index.html')
+    return render(request, 'index.html', {'title': 'Authentication'})
 
 def register(request):
     """User registration view."""
@@ -21,4 +21,4 @@ def register(request):
             return redirect('login')
     else:
         form = UserCreationForm()
-    return render(request, 'authenticate/register.html', {'form': form})
+    return render(request, 'authenticate/register.html', {'form': form, 'title': 'Register'})

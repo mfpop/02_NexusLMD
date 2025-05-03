@@ -1,0 +1,27 @@
+{% comment %}
+This template processor serves as a bridge between the custom component system using c-slot tags
+and the Django template system. It extracts the title and content from c-slot tags.
+{% endcomment %}
+
+{% if content %}
+    <!-- If content is already provided as a variable, use it directly -->
+    <div id="processed-content" class="h-full">
+        {% if title %}
+            <meta name="page-title" content="{{ title }}">
+        {% endif %}
+        {{ content|safe }}
+    </div>
+{% else %}
+    <!-- Otherwise, process c-slot content -->
+    <div id="processed-content" class="h-full">
+        {% for slot in slots %}
+            {% if slot.name == 'title' %}
+                <meta name="page-title" content="{{ slot.content }}">
+            {% endif %}
+            
+            {% if slot.name == 'content' %}
+                {{ slot.content|safe }}
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endif %}

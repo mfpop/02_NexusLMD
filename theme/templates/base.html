@@ -1,23 +1,87 @@
 {% load static tailwind_tags %}
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-    <title>Django Tailwind</title>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta http-equiv="X-UA-Compatible" content="ie=edge">
-		{% tailwind_css %}
-		<!-- Alpine.js -->
-		<script defer src="{% static 'js/lib/alpine.min.js' %}"></script>
-		<!-- htmx -->
-		<script src="{% static 'js/lib/htmx.min.js' %}"></script>
-	</head>
+  <head>
+    <title>NexusLMD</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    {% tailwind_css %}
+    <!-- Alpine.js -->
+    <script defer src="{% static 'js/lib/alpine.min.js' %}"></script>
+    <!-- htmx -->
+    <script src="{% static 'js/lib/htmx.min.js' %}"></script>
+  </head>
 
-	<body class="bg-gray-50 font-serif leading-normal tracking-normal">
-		<div class="container mx-auto">
-			<section class="flex items-center justify-center h-screen">
-				<h1 class="text-5xl">Django + Tailwind = ❤️</h1>
-			</section>
-		</div>
-	</body>
+  <body class="bg-bg-secondary font-lora text-text-primary text-readable">
+    <header class="bg-bg-primary border-b border-gray-200 shadow-sm">
+      <div class="container mx-auto px-4 py-4">
+        <nav class="flex items-center justify-between">
+          <a href="/" class="text-2xl font-righteous text-green-600">NexusLMD</a>
+          <div class="flex space-x-6">
+            <a href="/" class="hover:text-green-500">Home</a>
+            <a href="/about" class="hover:text-green-500">About</a>
+            <a href="/news" class="hover:text-green-500">News</a>
+            <a href="/contact" class="hover:text-green-500">Contact</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+      {% block content %}
+        <section class="flex items-center justify-center min-h-[60vh]">
+          <div class="text-center">
+            <h1 class="text-4xl md:text-5xl mb-6 text-green-600 font-righteous">Welcome to NexusLMD</h1>
+            <p class="text-text-secondary text-lg max-w-2xl mx-auto">A modern Django application with a beautiful, readable design using our new color scheme.</p>
+            <div class="mt-8">
+              <a href="/about" class="bg-green-400 hover:bg-green-500 active:bg-green-600 text-text-light px-6 py-3 rounded-md mr-4">Learn More</a>
+              <a href="/contact" class="bg-bg-tertiary border border-green-200 hover:bg-green-100 text-text-primary px-6 py-3 rounded-md">Contact Us</a>
+            </div>
+          </div>
+        </section>
+      {% endblock %}
+    </main>
+
+    <footer class="bg-bg-dark text-text-light mt-12">
+      <div class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <h3 class="font-righteous text-xl mb-4">NexusLMD</h3>
+            <p class="text-gray-300">A modern web application with a beautiful design system.</p>
+          </div>
+          <div>
+            <h3 class="font-righteous text-xl mb-4">Quick Links</h3>
+            <ul class="space-y-2">
+              <li>
+                <a href="/" class="hover:text-accent-blue">Home</a>
+              </li>
+              <li>
+                <a href="/about" class="hover:text-accent-blue">About</a>
+              </li>
+              <li>
+                <a href="/news" class="hover:text-accent-blue">News</a>
+              </li>
+              <li>
+                <a href="/contact" class="hover:text-accent-blue">Contact</a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="font-righteous text-xl mb-4">Connect</h3>
+            <div class="flex space-x-4">
+              <a href="#" class="hover:text-accent-blue">Twitter</a>
+              <a href="#" class="hover:text-accent-blue">LinkedIn</a>
+              <a href="#" class="hover:text-accent-blue">GitHub</a>
+            </div>
+          </div>
+        </div>
+        <div class="border-t border-green-700 mt-8 pt-6 text-center text-gray-400">
+          <p>
+            &copy; {% now 'Y' %}NexusLMD. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
+  </body>
 </html>

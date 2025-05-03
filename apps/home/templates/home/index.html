@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <!-- Hero Section -->
+  <section class="py-12 md:py-20">
+    <div class="text-center">
+      <h1 class="text-4xl md:text-6xl font-righteous text-green-600 mb-6">Welcome to NexusLMD</h1>
+      <p class="text-text-secondary text-xl max-w-3xl mx-auto">A comprehensive platform for managing and tracking your production metrics with a modern, readable design.</p>
+      <div class="mt-10 flex flex-wrap justify-center gap-4">
+        {% include 'components/buttons.html' with type='primary' text='Get Started' url='/authenticate/register' classes='px-8 py-3 text-lg' %}
+        {% include 'components/buttons.html' with type='secondary' text='Learn More' url='/about' classes='px-8 py-3 text-lg' %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Announcement Banner -->
+  <section class="my-12">
+    {% include 'components/alerts.html' with type='info' message='Welcome to our newly redesigned interface with improved readability and modern color scheme!' %}
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-12 bg-bg-tertiary rounded-lg">
+    <h2 class="text-3xl font-righteous text-green-600 text-center mb-12">Key Features</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Feature 1 -->
+      {% include 'components/cards.html' with title='Production Metrics' content='Track and analyze all your production metrics in real-time with our comprehensive dashboard.' highlight=True footer="<a href='/metrics' class='text-accent-blue hover:text-accent-blue-dark'>View Metrics →</a>" %}
+
+      <!-- Feature 2 -->
+      {% include 'components/cards.html' with title='Activity Tracking' content='Monitor activities across your entire organization with detailed logs and reports.' highlight=True footer="<a href='/activities' class='text-accent-blue hover:text-accent-blue-dark'>View Activities →</a>" %}
+
+      <!-- Feature 3 -->
+      {% include 'components/cards.html' with title='Real-time Chat' content='Communicate instantly with team members through our integrated chat system.' highlight=True footer="<a href='/chat' class='text-accent-blue hover:text-accent-blue-dark'>Open Chat →</a>" %}
+    </div>
+  </section>
+
+  <!-- News Section -->
+  <section class="py-12">
+    <div class="flex justify-between items-center mb-8">
+      <h2 class="text-3xl font-righteous text-green-600">Latest News</h2>
+      {% include 'components/buttons.html' with type='secondary' text='View All News' url='/news' %}
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- News Item 1 -->
+      {% include 'components/cards.html' with title='Q2 Production Report' content='Our Q2 production metrics show a 15% increase in efficiency across all departments.' image_url='/static/images/placeholder-1.jpg' footer="<span class='text-text-tertiary'>May 1, 2025</span>" %}
+
+      <!-- News Item 2 -->
+      {% include 'components/cards.html' with title='New Analytics Features' content="We've added powerful new analytics capabilities to help you better understand your production data." image_url='/static/images/placeholder-2.jpg' footer="<span class='text-text-tertiary'>April 28, 2025</span>" %}
+    </div>
+  </section>
+
+  <!-- Contact Form Section -->
+  <section class="py-12 bg-bg-tertiary rounded-lg my-12">
+    <div class="max-w-xl mx-auto">
+      <h2 class="text-3xl font-righteous text-green-600 text-center mb-8">Get In Touch</h2>
+
+      <form action="/contact/submit/" method="post" class="space-y-6">
+        {% csrf_token %}
+
+        {% include 'components/forms.html' with type='text' name='name' label='Name' required=True %}
+
+        {% include 'components/forms.html' with type='email' name='email' label='Email Address' required=True %}
+
+        {% include 'components/forms.html' with type='textarea' name='message' label='Message' rows=5 required=True %}
+
+        <div class="flex justify-end">
+          {% include 'components/buttons.html' with type='primary' text='Send Message' is_submit=True %}
+        </div>
+      </form>
+    </div>
+  </section>
+{% endblock %}

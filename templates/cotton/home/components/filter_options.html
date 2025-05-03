@@ -1,0 +1,96 @@
+<div class="py-3 px-4 border-t border-b border-soft-green-dark/10" x-data="{ selectedCategory: '', selectedDate: '', selectedType: '' }">
+    <div class="flex flex-wrap gap-4 md:gap-6">
+        <!-- Categories filter -->
+        <div class="flex-1 min-w-[180px]">
+            <label for="category-filter" class="block text-sm font-medium text-soft-green-dark mb-1">Category</label>
+            <select 
+                id="category-filter" 
+                x-model="selectedCategory"
+                @change="$dispatch('filter-change', {type: 'category', value: selectedCategory})"
+                hx-get="{% url 'home:search' %}"
+                hx-trigger="change"
+                hx-target="#main-content-inner"
+                hx-include="[name='query'],[name='date'],[name='type']"
+                class="w-full bg-white/80 border border-soft-green-dark/20 rounded-md py-1 px-2 text-soft-green-dark text-sm focus:outline-none focus:ring-1 focus:ring-lime-yellow">
+                <option value="">All Categories</option>
+                {% for category in categories %}
+                    <option value="{{ category }}">{{ category }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <!-- Date filter -->
+        <div class="flex-1 min-w-[180px]">
+            <label for="date-filter" class="block text-sm font-medium text-soft-green-dark mb-1">Date</label>
+            <select 
+                id="date-filter" 
+                x-model="selectedDate"
+                @change="$dispatch('filter-change', {type: 'date', value: selectedDate})"
+                hx-get="{% url 'home:search' %}"
+                hx-trigger="change"
+                hx-target="#main-content-inner"
+                hx-include="[name='query'],[name='category'],[name='type']"
+                class="w-full bg-white/80 border border-soft-green-dark/20 rounded-md py-1 px-2 text-soft-green-dark text-sm focus:outline-none focus:ring-1 focus:ring-lime-yellow">
+                <option value="">Any Time</option>
+                {% for date in dates %}
+                    <option value="{{ date }}">{{ date }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <!-- Type filter -->
+        <div class="flex-1 min-w-[180px]">
+            <label for="type-filter" class="block text-sm font-medium text-soft-green-dark mb-1">Type</label>
+            <select 
+                id="type-filter" 
+                x-model="selectedType"
+                @change="$dispatch('filter-change', {type: 'type', value: selectedType})"
+                hx-get="{% url 'home:search' %}"
+                hx-trigger="change"
+                hx-target="#main-content-inner"
+                hx-include="[name='query'],[name='category'],[name='date']"
+                class="w-full bg-white/80 border border-soft-green-dark/20 rounded-md py-1 px-2 text-soft-green-dark text-sm focus:outline-none focus:ring-1 focus:ring-lime-yellow">
+                <option value="">All Types</option>
+                {% for type in types %}
+                    <option value="{{ type }}">{{ type }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    
+    <!-- Active filters display -->
+    <div class="mt-3 flex flex-wrap gap-2" x-show="selectedCategory || selectedDate || selectedType">
+        <template x-if="selectedCategory">
+            <span class="inline-flex items-center px-2 py-1 bg-lime-yellow/70 text-soft-green-dark text-xs rounded-md">
+                Category: <span x-text="selectedCategory" class="font-medium ml-1"></span>
+                <button 
+                    @click="selectedCategory = ''; $dispatch('filter-change', {type: 'category', value: ''})"
+                    class="ml-1 text-soft-green-dark/70 hover:text-soft-green-dark">
+                    &times;
+                </button>
+            </span>
+        </template>
+        
+        <template x-if="selectedDate">
+            <span class="inline-flex items-center px-2 py-1 bg-lime-yellow/70 text-soft-green-dark text-xs rounded-md">
+                Date: <span x-text="selectedDate" class="font-medium ml-1"></span>
+                <button 
+                    @click="selectedDate = ''; $dispatch('filter-change', {type: 'date', value: ''})"
+                    class="ml-1 text-soft-green-dark/70 hover:text-soft-green-dark">
+                    &times;
+                </button>
+            </span>
+        </template>
+        
+        <template x-if="selectedType">
+            <span class="inline-flex items-center px-2 py-1 bg-lime-yellow/70 text-soft-green-dark text-xs rounded-md">
+                Type: <span x-text="selectedType" class="font-medium ml-1"></span>
+                <button 
+                    @click="selectedType = ''; $dispatch('filter-change', {type: 'type', value: ''})"
+                    class="ml-1 text-soft-green-dark/70 hover:text-soft-green-dark">
+                    &times;
+                </button>
+            </span>
+        </template>
+    </div>
+</div>

@@ -1,0 +1,64 @@
+<div class="py-3 px-4 border-t border-b border-soft-green-dark/10" x-data="{ searchQuery: '' }">
+    <!-- Hidden field to preserve the current page title -->
+    <input type="hidden" name="current_title" value="{{ title }}">
+    
+    <div class="flex flex-wrap gap-4 items-center">
+        <!-- Search input field -->
+        <div class="flex-1 min-w-[180px] max-w-2xl">
+            <label for="search-input" class="block text-sm font-medium text-soft-green-dark mb-1">Search</label>
+            <div class="relative">
+                <input 
+                    type="text"
+                    id="search-input"
+                    name="query"
+                    x-model="searchQuery"
+                    @input="$dispatch('search-change', {query: searchQuery})"
+                    hx-trigger="keyup changed delay:300ms"
+                    hx-get="{% url 'home:search' %}"
+                    hx-target="#main-content-inner"
+                    hx-indicator="#loading-indicator"
+                    hx-include="[name='query'],[name='search_in'],[name='current_title']"
+                    placeholder="Type to search..." 
+                    class="w-full bg-white/80 border border-soft-green-dark/20 rounded-md py-1 pl-3 pr-8 text-soft-green-dark text-sm focus:outline-none focus:ring-1 focus:ring-lime-yellow"
+                    autofocus
+                >
+                <div class="absolute inset-y-0 right-0 flex items-center pr-2">
+                    <button 
+                        x-show="searchQuery.length > 0"
+                        @click="searchQuery = ''; document.getElementById('search-input').focus()"
+                        class="text-soft-green-dark/50 hover:text-soft-green-dark/80"
+                        type="button">
+                        &times;
+                    </button>
+                </div>
+            </div>
+            <p class="text-xs text-soft-green-dark/60 mt-1">Results will appear as you type</p>
+        </div>
+        
+        <!-- Search options (can be expanded in the future) -->
+        <div class="flex-shrink-0 flex items-end pb-1">
+            <select 
+                name="search_in"
+                class="bg-white/80 border border-soft-green-dark/20 rounded-md text-sm text-soft-green-dark py-1 px-2 focus:outline-none focus:ring-1 focus:ring-lime-yellow"
+                hx-trigger="change"
+                hx-get="{% url 'home:search' %}"
+                hx-target="#main-content-inner"
+                hx-include="[name='query'],[name='current_title']"
+            >
+                <option value="all">All Content</option>
+                <option value="title">Titles Only</option>
+                <option value="description">Descriptions</option>
+            </select>
+        </div>
+    </div>
+    
+    <!-- Search tips -->
+    <div class="mt-3" x-show="searchQuery.length > 2">
+        <div class="text-xs text-soft-green-dark/70 flex items-center gap-2">
+            <span class="font-medium">Search Tips:</span>
+            <span class="bg-white/40 px-2 py-0.5 rounded">Use quotes for exact phrases</span>
+            <span class="bg-white/40 px-2 py-0.5 rounded">Use + to include terms</span>
+            <span class="bg-white/40 px-2 py-0.5 rounded">Use - to exclude terms</span>
+        </div>
+    </div>
+</div>
