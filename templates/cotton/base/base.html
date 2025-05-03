@@ -1,6 +1,5 @@
 {% load static tailwind_tags %}
 {% load static %}
-<link href="{% static 'css/tailwind.css' %}" rel="stylesheet">
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,66 +7,127 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexus LMD | {{ title }}</title>
     {% tailwind_css %}
+    <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
     <link rel="stylesheet" href="{% static 'fonts/fonts.css' %}">
     <link rel="stylesheet" href="{% static 'css/buttons.css' %}">
+    
+    <!-- Alpine.js -->
+    <script defer src="{% static 'js/lib/alpine.min.js' %}"></script>
+    
+    <!-- htmx -->
+    <script src="{% static 'js/lib/htmx.min.js' %}"></script>
+    
     <c-slot name="head">{{extra_head}}</c-slot>
 </head>
-<body class="bg-cream-white font-lora ">
-    <div class="grid grid-rows-[auto_1fr] grid-cols-[70px_1fr] min-h-screen overflow-hidden">
+<body class="bg-cream-white font-lora"
+      x-data="{ 
+          pageLoading: false,
+          animations: {
+              spin: 'to { transform: rotate(360deg); }',
+              fadeInUp: 'from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); }',
+          },
+          init() {
+              // Add keyframe animations (can't be inline)
+              const style = document.createElement('style');
+              style.textContent = `
+                  @keyframes spin { ${this.animations.spin} }
+                  @keyframes fadeInUp { ${this.animations.fadeInUp} }
+                  [x-cloak] { display: none !important; }
+                  .htmx-settling .fade-transition { transition: opacity 0.3s ease-out, transform 0.3s ease-out; }
+                  .htmx-request .htmx-indicator { opacity: 1; }
+              `;
+              document.head.appendChild(style);
+              
+              // Set up Alpine store
+              Alpine.store('pageLoading', false);
+              
+              // Listen for htmx events using Alpine
+              this.$el.addEventListener('htmx:beforeRequest', () => {
+                  Alpine.store('pageLoading', true);
+                  this.pageLoading = true;
+              });
+              
+              this.$el.addEventListener('htmx:afterRequest', () => {
+                  Alpine.store('pageLoading', false);
+                  this.pageLoading = false;
+              });
+              
+              this.$el.addEventListener('htmx:beforeSwap', (evt) => {
+                  const mainContent = document.getElementById('main-content');
+                  if (mainContent) {
+                      mainContent.style.animation = 'none';
+                      mainContent.style.opacity = '0';
+                      mainContent.style.transform = 'translateY(10px)';
+                      mainContent.offsetWidth; // Force reflow
+                  }
+              });
+              
+              this.$el.addEventListener('htmx:afterSwap', () => {
+                  const mainContent = document.getElementById('main-content');
+                  if (mainContent) {
+                      mainContent.style.animation = 'fadeInUp 0.3s ease-out forwards';
+                  }
+                  
+                  // Re-initialize Alpine components in new content
+                  if (Alpine) {
+                      Alpine.initTree(document.getElementById('main-content'));
+                  }
+              });
+          },
+          get isLoading() {
+              return Alpine.store('pageLoading');
+          },
+          set isLoading(value) {
+              Alpine.store('pageLoading', value);
+              this.$el.style.cursor = value ? 'wait' : 'default';
+          }
+      }"
+      x-effect="isLoading ? $el.style.cursor = 'wait' : $el.style.cursor = 'default'">
+    <div class="grid grid-rows-[40px_1fr] grid-cols-[70px_1fr] min-h-screen overflow-hidden">
         <!-- Sidebar -->
-        <aside class="h-screen bg-light-beige shadow-md row-span-2">
-            <c-base.sidebar />
+        <aside class="h-screen bg-light-beige shadow-md row-span-2 z-20">
+            {% include 'cotton/base/sidebar.html' %}
         </aside>
         
+        <!-- Top menu -->
+        <header class="bg-light-beige border-b border-gray-200 z-10 col-start-2 col-span-1 row-start-1">
+            {% include 'cotton/base/topmenu.html' %}
+        </header>
+        
         <!-- Main content wrapper -->
-        <div id="main_content" class="col-start-2 row-span-2 overflow-hidden">
+        <div id="main_content" class="col-start-2 row-start-2 overflow-hidden p-2 bg-cream-white relative">
+            <!-- Loading indicator -->
+            <div id="loading-indicator" 
+                 class="absolute inset-0 flex items-center justify-center z-30 bg-cream-white bg-opacity-70 opacity-0 transition-opacity duration-300 ease-in-out htmx-indicator" 
+                 x-show="pageLoading" 
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="transition ease-in duration-300"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 x-cloak>
+                <div class="rounded-full h-10 w-10 border-b-2 border-soft-green-dark" style="animation: spin 1s linear infinite;"></div>
+            </div>
+            
             <!-- Main content -->
-            <div class=" h-full">
-            <main class="bg-gray-200 bg-opacity-50 p-0 rounded-lg transition-all duration-300 transform animate-fade-in-up mt-[36px] w-full h-[calc(100%-32px)] overflow-auto" id="main-content">
-                <!-- Top menu -->
-                <header class="bg-white shadow-md fixed top-0 left-0 w-full z-10" style="margin-left: 72px;">
-                    {% include 'cotton/base/topmenu.html' %}
-                </header>
-                <div class="flex flex-col justify-start h-full p-2">
-                    {{ content }}
-                </div>
-            </main>
+            <div class="h-full">
+                <main class="bg-gray-200 bg-opacity-50 rounded-lg w-full h-full overflow-auto transition-all duration-300 ease-out fade-transition" 
+                      id="main-content"
+                      hx-boost="true"
+                      hx-select="#main-content-inner"
+                      hx-target="#main-content"
+                      hx-swap="innerHTML"
+                      hx-push-url="true"
+                      hx-indicator="#loading-indicator"
+                      style="opacity: 0; transform: translateY(10px); animation: fadeInUp 0.3s ease-out forwards;">
+                    <div id="main-content-inner" class="flex flex-col justify-start h-full p-4">
+                        {{ content }}
+                    </div>
+                </main>
             </div>
         </div>
     </div>
     {{ extra_js }}
-    
-    <script>
-        // Handle page transitions
-        document.addEventListener('DOMContentLoaded', function() {
-            const links = document.querySelectorAll('a[href]:not([target="_blank"])');
-            
-            links.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    // Don't apply transition for certain types of links
-                    if (this.hostname !== window.location.hostname || 
-                        this.getAttribute('href').startsWith('#') || 
-                        this.getAttribute('download') !== null) {
-                        return;
-                    }
-                    
-                    const mainContent = document.getElementById('main-content');
-                    
-                    if (mainContent) {
-                        e.preventDefault();
-                        
-                        // Remove entry animation class and add exit animation class
-                        mainContent.classList.remove('animate-fade-in-up');
-                        mainContent.classList.add('opacity-0', 'translate-y-4');
-                        
-                        // Navigate after transition completes
-                        setTimeout(() => {
-                            window.location.href = this.href;
-                        }, 300);
-                    }
-                });
-            });
-        });
-    </script>
 </body>
 </html>
