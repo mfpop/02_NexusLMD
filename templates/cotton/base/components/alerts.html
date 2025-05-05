@@ -1,0 +1,47 @@
+{% comment %}Usage:{% include 'components/alerts.html' with type='success' message='Your profile has been updated!' %}Available types: success, error, warning, info{% endcomment %}
+
+{% if type == 'success' %}
+  <div class="bg-success-light border-l-4 border-success p-4 mb-4 rounded-r-md">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <!-- Success icon can be added here -->
+      </div>
+      <div class="ml-3">
+        <p class="text-success font-medium">{{ message }}</p>
+      </div>
+    </div>
+  </div>
+{% elif type == 'error' %}
+  <div class="bg-error-light border-l-4 border-error p-4 mb-4 rounded-r-md">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <!-- Error icon can be added here -->
+      </div>
+      <div class="ml-3">
+        <p class="text-error font-medium">{{ message }}</p>
+      </div>
+    </div>
+  </div>
+{% elif type == 'warning' %}
+  <div class="bg-warning-light border-l-4 border-warning p-4 mb-4 rounded-r-md">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <!-- Warning icon can be added here -->
+      </div>
+      <div class="ml-3">
+        <p class="text-warning-dark font-medium">{{ message }}</p>
+      </div>
+    </div>
+  </div>
+{% elif type == 'info' %}
+  <div class="bg-info-light border-l-4 border-info p-4 mb-4 rounded-r-md">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <!-- Info icon can be added here -->
+      </div>
+      <div class="ml-3">
+        <p class="text-info font-medium">{{ message }}</p>
+      </div>
+    </div>
+  </div>
+{% endif %}

@@ -1,68 +1,419 @@
-{% extends 'cotton/base/base.html' %}
-{% load static %}
+<!-- Work history content -->
+<div id="work-experience-container">
+  <!-- Header with title and add button -->
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-xl font-bold text-blue-700">Work Experience</h2>
+    <div class="flex items-center space-x-3">
+      <!-- Status message toast -->
+      <div id="status-message" class="px-4 py-2 rounded-md text-sm font-medium animate-pulse shadow-sm hidden"></div>
+      <!-- Add button -->
+      <button 
+        id="add-experience-btn"
+        class="flex items-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 text-sm rounded-md shadow-sm transition-all"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        <span>Add Experience</span>
+      </button>
+    </div>
+  </div>
 
-{% block title %}
-  Work History
-{% endblock %}
-{% block page_title %}
-  Work History
-{% endblock %}
+  <!-- Work Experience Datasheet Table -->
+  <div class="mb-8 overflow-hidden border border-gray-200 rounded-lg">
+    <!-- Empty state message -->
+    <div id="empty-state" class="bg-gray-50 p-6 text-center border-b border-gray-200">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+      </svg>
+      <p class="text-gray-600">No work experience records found.</p>
+      <p class="text-gray-500 text-sm mt-1">Click "Add Experience" to add your employment details.</p>
+    </div>
 
-{% block content %}
-  <div class="container mx-auto p-6">
-    <div class="bg-white rounded-lg shadow-md p-6">
-      <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-blue-600">Work History</h1>
-        <a href="{% url 'auth:profile' %}" class="text-sm text-blue-600 hover:text-blue-800 flex items-center">
-          <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-          </svg>Back to Profile
-        </a>
+    <!-- Table -->
+    <table id="experience-table" class="min-w-full divide-y divide-gray-200 hidden">
+      <thead class="bg-gray-50">
+        <tr>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Company</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
+          <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th>
+          <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <div class="flex justify-end">
+              <button 
+                id="add-row-btn"
+                type="button"
+                class="flex items-center p-2 bg-blue-100 hover:bg-blue-200 text-blue-700 text-xs rounded-full transition-colors"
+                title="Add New Entry"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody id="experience-tbody" class="bg-white divide-y divide-gray-200">
+        <!-- Rows will be added here dynamically -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Description Modal -->
+  <div id="description-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-lg">
+      <div class="flex justify-between items-center mb-4">
+        <h3 id="modal-position" class="text-lg font-bold text-gray-900"></h3>
+        <button id="close-modal" class="text-gray-400 hover:text-gray-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
-
-      <!-- Work history content -->
-      <div class="mb-6">
-        <p class="text-gray-600 italic">No work history records found. Add your employment details below.</p>
+      <div class="mb-2">
+        <span id="modal-company" class="font-medium text-blue-600"></span>
+        <span class="mx-2 text-gray-400">|</span>
+        <span id="modal-duration" class="text-gray-600"></span>
       </div>
-
-      <!-- Add work history form -->
-      <div class="bg-blue-50 p-4 rounded shadow">
-        <h2 class="font-bold text-lg mb-4 text-blue-700">Add Work Experience</h2>
-        <form method="POST" action="{% url 'auth:profile_work' %}" class="space-y-4">
-          {% csrf_token %}
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label for="company" class="block text-sm font-medium text-gray-700">Company Name</label>
-              <input type="text" id="company" name="company" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" />
-            </div>
-            <div>
-              <label for="position" class="block text-sm font-medium text-gray-700">Position</label>
-              <input type="text" id="position" name="position" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" />
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label for="start_date" class="block text-sm font-medium text-gray-700">Start Date</label>
-              <input type="date" id="start_date" name="start_date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" />
-            </div>
-            <div>
-              <label for="end_date" class="block text-sm font-medium text-gray-700">End Date</label>
-              <input type="date" id="end_date" name="end_date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" />
-            </div>
-          </div>
-
-          <div>
-            <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-            <textarea id="description" name="description" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"></textarea>
-          </div>
-
-          <div class="flex justify-end">
-            <button type="button" onclick="window.location.href='{% url 'auth:profile' %}'" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md mr-2">Cancel</button>
-            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Add Work Experience</button>
-          </div>
-        </form>
+      <div class="border-t border-gray-200 pt-4 mt-2">
+        <p id="modal-description" class="text-gray-700 mb-6 whitespace-pre-line"></p>
+      </div>
+      <div class="flex justify-end">
+        <button id="modal-close-btn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          Close
+        </button>
       </div>
     </div>
   </div>
-{% endblock %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize state
+  let experiences = JSON.parse(document.getElementById('work-experience-container').dataset.experiences || '[]');
+  let editingIndex = null;
+  let selectedExp = null;
+
+  // DOM Elements
+  const container = document.getElementById('work-experience-container');
+  const emptyState = document.getElementById('empty-state');
+  const experienceTable = document.getElementById('experience-table');
+  const experienceTbody = document.getElementById('experience-tbody');
+  const addExperienceBtn = document.getElementById('add-experience-btn');
+  const addRowBtn = document.getElementById('add-row-btn');
+  const statusMessage = document.getElementById('status-message');
+  const descriptionModal = document.getElementById('description-modal');
+  const closeModalBtn = document.getElementById('close-modal');
+  const modalCloseBtn = document.getElementById('modal-close-btn');
+
+  // Helper Functions
+  function formatDate(dateString) {
+    if (!dateString) return 'Present';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+  }
+
+  function showStatus(message, type = 'success') {
+    statusMessage.textContent = message;
+    statusMessage.className = `px-4 py-2 rounded-md text-sm font-medium animate-pulse shadow-sm ${type === 'success' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`;
+    statusMessage.classList.remove('hidden');
+    setTimeout(() => {
+      statusMessage.classList.add('hidden');
+    }, 3000);
+  }
+
+  function toggleEmptyState() {
+    if (experiences.length === 0) {
+      emptyState.classList.remove('hidden');
+      experienceTable.classList.add('hidden');
+    } else {
+      emptyState.classList.add('hidden');
+      experienceTable.classList.remove('hidden');
+    }
+  }
+
+  function createViewRow(exp, index) {
+    const row = document.createElement('tr');
+    row.className = 'hover:bg-gray-50';
+    row.innerHTML = `
+      <td class="px-6 py-4 whitespace-nowrap">
+        <div class="text-sm font-medium text-gray-900">${exp.position}</div>
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap">
+        <div class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+          ${exp.company}
+        </div>
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        ${formatDate(exp.startDate)} - ${formatDate(exp.endDate)}
+      </td>
+      <td class="px-6 py-4 text-center">
+        <button 
+          class="view-details-btn text-xs text-blue-600 hover:text-blue-900 font-medium flex items-center justify-center mx-auto"
+          data-index="${index}"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+          View Details
+        </button>
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+        <div class="flex items-center justify-end space-x-2">
+          <button 
+            class="edit-btn p-1.5 text-yellow-600 hover:bg-yellow-50 rounded transition-colors"
+            data-index="${index}"
+            title="Edit"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+          </button>
+          <button 
+            class="delete-btn p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
+            data-index="${index}"
+            title="Delete"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+        </div>
+      </td>
+    `;
+    return row;
+  }
+
+  function createEditRow(exp, index) {
+    const row = document.createElement('tr');
+    row.className = 'bg-blue-50';
+    row.innerHTML = `
+      <td colspan="5" class="px-6 py-4">
+        <div class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1">Position</label>
+              <input 
+                type="text" 
+                class="position-input w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Position title"
+                value="${exp.position || ''}"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1">Company</label>
+              <input 
+                type="text" 
+                class="company-input w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Company name"
+                value="${exp.company || ''}"
+              />
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1">Start Date</label>
+              <input 
+                type="date" 
+                class="start-date-input w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500"
+                value="${exp.startDate || ''}"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1">End Date</label>
+              <input 
+                type="date" 
+                class="end-date-input w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500"
+                value="${exp.endDate || ''}"
+              />
+              <div class="mt-1 text-xs text-gray-500">Leave blank for current position</div>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Description</label>
+            <textarea 
+              class="description-input w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500"
+              rows="3"
+              placeholder="Describe your responsibilities and achievements"
+            >${exp.description || ''}</textarea>
+          </div>
+          <div class="flex justify-end space-x-2">
+            <button 
+              class="cancel-btn px-4 py-2 bg-gray-200 text-gray-700 rounded-md text-sm hover:bg-gray-300"
+              data-index="${index}"
+            >
+              Cancel
+            </button>
+            <button 
+              class="save-btn px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700"
+              data-index="${index}"
+            >
+              ${exp.isNew ? 'Save Experience' : 'Save Changes'}
+            </button>
+          </div>
+        </div>
+      </td>
+    `;
+    return row;
+  }
+
+  function renderTable() {
+    experienceTbody.innerHTML = '';
+    experiences.forEach((exp, index) => {
+      if (exp.editing) {
+        experienceTbody.appendChild(createEditRow(exp, index));
+      } else {
+        experienceTbody.appendChild(createViewRow(exp, index));
+      }
+    });
+    toggleEmptyState();
+  }
+
+  function showDescriptionModal(exp) {
+    document.getElementById('modal-position').textContent = exp.position;
+    document.getElementById('modal-company').textContent = exp.company;
+    document.getElementById('modal-duration').textContent = `${formatDate(exp.startDate)} - ${formatDate(exp.endDate)}`;
+    document.getElementById('modal-description').textContent = exp.description;
+    descriptionModal.classList.remove('hidden');
+  }
+
+  function hideDescriptionModal() {
+    descriptionModal.classList.add('hidden');
+  }
+
+  async function saveExperience(exp, index) {
+    showStatus('Saving...', 'info');
+    try {
+      const url = exp.isNew ? "{% url 'auth:add_work_experience' %}" : "{% url 'auth:update_work_experience' %}";
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify({
+          id: exp.id,
+          company: exp.company,
+          position: exp.position,
+          startDate: exp.startDate,
+          endDate: exp.endDate,
+          description: exp.description
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (exp.isNew) {
+          experiences.push({ ...data, editing: false, isNew: false });
+        } else {
+          experiences[index] = { ...data, editing: false, isNew: false };
+        }
+        showStatus('Experience saved successfully!');
+        renderTable();
+      } else {
+        throw new Error('Failed to save experience');
+      }
+    } catch (error) {
+      console.error('Error saving experience:', error);
+      showStatus('Error saving experience. Please try again.', 'error');
+    }
+  }
+
+  async function deleteExperience(index) {
+    if (!confirm('Are you sure you want to delete this work experience?')) return;
+
+    const exp = experiences[index];
+    showStatus('Deleting...', 'info');
+    try {
+      const response = await fetch("{% url 'auth:delete_work_experience' %}", {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify({ id: exp.id })
+      });
+
+      if (response.ok) {
+        experiences.splice(index, 1);
+        showStatus('Experience deleted successfully!');
+        renderTable();
+      } else {
+        throw new Error('Failed to delete experience');
+      }
+    } catch (error) {
+      console.error('Error deleting experience:', error);
+      showStatus('Error deleting experience. Please try again.', 'error');
+    }
+  }
+
+  // Event Listeners
+  addExperienceBtn.addEventListener('click', () => {
+    experiences.push({
+      company: '',
+      position: '',
+      startDate: '',
+      endDate: '',
+      description: '',
+      editing: true,
+      isNew: true
+    });
+    renderTable();
+  });
+
+  addRowBtn.addEventListener('click', () => {
+    experiences.push({
+      company: '',
+      position: '',
+      startDate: '',
+      endDate: '',
+      description: '',
+      editing: true,
+      isNew: true
+    });
+    renderTable();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.view-details-btn')) {
+      const index = parseInt(e.target.closest('.view-details-btn').dataset.index);
+      showDescriptionModal(experiences[index]);
+    } else if (e.target.closest('.edit-btn')) {
+      const index = parseInt(e.target.closest('.edit-btn').dataset.index);
+      experiences[index].editing = true;
+      renderTable();
+    } else if (e.target.closest('.delete-btn')) {
+      const index = parseInt(e.target.closest('.delete-btn').dataset.index);
+      deleteExperience(index);
+    } else if (e.target.closest('.cancel-btn')) {
+      const index = parseInt(e.target.closest('.cancel-btn').dataset.index);
+      if (experiences[index].isNew) {
+        experiences.splice(index, 1);
+      } else {
+        experiences[index].editing = false;
+      }
+      renderTable();
+    } else if (e.target.closest('.save-btn')) {
+      const index = parseInt(e.target.closest('.save-btn').dataset.index);
+      const exp = experiences[index];
+      const row = e.target.closest('tr');
+      
+      exp.position = row.querySelector('.position-input').value;
+      exp.company = row.querySelector('.company-input').value;
+      exp.startDate = row.querySelector('.start-date-input').value;
+      exp.endDate = row.querySelector('.end-date-input').value;
+      exp.description = row.querySelector('.description-input').value;
+      
+      saveExperience(exp, index);
+    }
+  });
+
+  closeModalBtn.addEventListener('click', hideDescriptionModal);
+  modalCloseBtn.addEventListener('click', hideDescriptionModal);
+
+  // Initial render
+  renderTable();
+});
+</script>

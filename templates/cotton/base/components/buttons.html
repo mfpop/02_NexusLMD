@@ -1,0 +1,33 @@
+{% comment %}Usage:{% include 'components/buttons.html' with type='primary' text='Submit' url='#' %}Available types: primary, secondary, danger, info, disabled Additional parameters: - is_submit: Use for form submit buttons instead of links - classes: Additional CSS classes to add{% endcomment %}
+
+{% if type == 'primary' %}
+  {% if is_submit %}
+    <button type="submit" class="bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-text-light px-4 py-2 rounded-md transition-colors {{ classes }}">{{ text }}</button>
+  {% else %}
+    <a href="{{ url }}" class="inline-block bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-text-light px-4 py-2 rounded-md transition-colors {{ classes }}">{{ text }}</a>
+  {% endif %}
+{% elif type == 'secondary' %}
+  {% if is_submit %}
+    <button type="submit" class="bg-blue-50 hover:bg-blue-100 active:bg-blue-200 text-blue-600 border border-blue-300 px-4 py-2 rounded-md transition-colors {{ classes }}">{{ text }}</button>
+  {% else %}
+    <a href="{{ url }}" class="inline-block bg-blue-50 hover:bg-blue-100 active:bg-blue-200 text-blue-600 border border-blue-300 px-4 py-2 rounded-md transition-colors {{ classes }}">{{ text }}</a>
+  {% endif %}
+{% elif type == 'danger' %}
+  {% if is_submit %}
+    <button type="submit" class="bg-blue-700 hover:bg-blue-800 active:bg-blue-900 text-text-light px-4 py-2 rounded-md transition-colors {{ classes }}">{{ text }}</button>
+  {% else %}
+    <a href="{{ url }}" class="inline-block bg-blue-700 hover:bg-blue-800 active:bg-blue-900 text-text-light px-4 py-2 rounded-md transition-colors {{ classes }}">{{ text }}</a>
+  {% endif %}
+{% elif type == 'info' %}
+  {% if is_submit %}
+    <button type="submit" class="bg-blue-300 hover:bg-blue-400 active:bg-blue-500 text-text-light px-4 py-2 rounded-md transition-colors {{ classes }}">{{ text }}</button>
+  {% else %}
+    <a href="{{ url }}" class="inline-block bg-blue-300 hover:bg-blue-400 active:bg-blue-500 text-text-light px-4 py-2 rounded-md transition-colors {{ classes }}">{{ text }}</a>
+  {% endif %}
+{% elif type == 'disabled' %}
+  {% if is_submit %}
+    <button type="button" disabled class="bg-blue-100 text-blue-300 cursor-not-allowed px-4 py-2 rounded-md {{ classes }}">{{ text }}</button>
+  {% else %}
+    <span class="inline-block bg-blue-100 text-blue-300 cursor-not-allowed px-4 py-2 rounded-md {{ classes }}">{{ text }}</span>
+  {% endif %}
+{% endif %}

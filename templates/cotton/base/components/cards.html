@@ -1,0 +1,33 @@
+{% comment %}Usage:{% include 'components/cards.html' with title='Card Title' content='Card content goes here' %}Optional parameters: - footer: Footer text or content - highlight: Boolean to use highlighted style - image_url: URL to an image to display at the top - classes: Additional CSS classes{% endcomment %}
+
+<div class="{% if highlight %}
+    bg-bg-tertiary border-green-200
+  {% else %}
+    bg-bg-primary border-gray-200
+  {% endif %} border rounded-lg overflow-hidden {{ classes }} elevated">
+  {% if image_url %}
+    <div class="w-full">
+      <img src="{{ image_url }}" alt="{{ title }}" class="w-full h-48 object-cover" />
+    </div>
+  {% endif %}
+
+  <div class="p-5">
+    {% if title %}
+      <h3 class="text-xl font-semibold mb-2 {% if highlight %}text-green-600{% endif %}">{{ title }}</h3>
+    {% endif %}
+
+    <div class="{% if highlight %}
+        text-text-secondary
+      {% else %}
+        text-text-primary
+      {% endif %}">{{ content }}</div>
+
+    {% if footer %}
+      <div class="mt-4 pt-3 border-t {% if highlight %}
+          border-green-200 text-text-tertiary
+        {% else %}
+          border-gray-200 text-text-tertiary
+        {% endif %}">{{ footer }}</div>
+    {% endif %}
+  </div>
+</div>

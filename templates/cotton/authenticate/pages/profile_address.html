@@ -1,123 +1,103 @@
-{% extends 'cotton/base/base.html' %}
 {% load static %}
 
-{% block title %}Address Information{% endblock %}
-{% block page_title %}Address Information{% endblock %}
-
-{% block content %}
-<div class="container mx-auto p-6">
-  <div class="bg-white rounded-lg shadow-md p-6">
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-blue-600">Address Information</h1>
-      <a href="{% url 'auth:profile' %}" class="text-sm text-blue-600 hover:text-blue-800 flex items-center">
-        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-        </svg>
-        Back to Profile
-      </a>
+<!-- Address component for profile page -->
+<form id="address-form" class="space-y-3" method="POST" action="{% url 'auth:edit_profile' %}">
+  {% csrf_token %}
+  <!-- Street address, city, and postal code on one line -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+    <!-- Street address -->
+    <div>
+      <label class="block text-xs font-medium text-gray-700 mb-0.5">Street Address</label>
+      <input 
+        type="text"
+        name="address" 
+        id="address"
+        class="w-full border border-gray-300 rounded px-2 py-1 text-xs h-7"
+        placeholder="123 Main St"
+        value="{{ user.profile.address|default:'' }}"
+      >
     </div>
-
-    <!-- Address information content -->
-    <div class="mb-6">
-      <p class="text-gray-600 italic">No address information found. Add your address details below.</p>
+    <!-- City -->
+    <div>
+      <label class="block text-xs font-medium text-gray-700 mb-0.5">City</label>
+      <input 
+        type="text"
+        name="city" 
+        id="city"
+        class="w-full border border-gray-300 rounded px-2 py-1 text-xs h-7"
+        value="{{ user.profile.city|default:'' }}"
+      >
     </div>
-
-    <!-- Add address form -->
-    <div class="bg-blue-50 p-4 rounded shadow">
-      <h2 class="font-bold text-lg mb-4 text-blue-700">Add Address</h2>
-      <form method="POST" action="{% url 'auth:profile_address' %}" class="space-y-4">
-        {% csrf_token %}
-        
-        <div>
-          <label for="address_line1" class="block text-sm font-medium text-gray-700">Address Line 1</label>
-          <input 
-            type="text" 
-            id="address_line1" 
-            name="street" 
-            value="{{ user.profile.street|default:'' }}" 
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-            placeholder="123 Main St"
-          >
-        </div>
-        
-        <div>
-          <label for="address_line2" class="block text-sm font-medium text-gray-700">Address Line 2 (Optional)</label>
-          <input 
-            type="text" 
-            id="address_line2" 
-            name="street2" 
-            value="{{ user.profile.street2|default:'' }}" 
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-            placeholder="Apt #, Suite #, etc."
-          >
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label for="city" class="block text-sm font-medium text-gray-700">City</label>
-            <input 
-              type="text" 
-              id="city" 
-              name="city" 
-              value="{{ user.profile.city|default:'' }}" 
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-            >
-          </div>
-          <div>
-            <label for="state" class="block text-sm font-medium text-gray-700">State/Province</label>
-            <input 
-              type="text" 
-              id="state" 
-              name="state" 
-              value="{{ user.profile.state|default:'' }}" 
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-            >
-          </div>
-          <div>
-            <label for="postal_code" class="block text-sm font-medium text-gray-700">Postal Code</label>
-            <input 
-              type="text" 
-              id="postal_code" 
-              name="postal_code" 
-              value="{{ user.profile.postal_code|default:'' }}" 
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-            >
-          </div>
-        </div>
-        
-        <div>
-          <label for="country" class="block text-sm font-medium text-gray-700">Country</label>
-          <select 
-            id="country" 
-            name="country" 
-            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-          >
-            <option value="">Select a country</option>
-            <option value="US" {% if user.profile.country == 'US' %}selected{% endif %}>United States</option>
-            <option value="CA" {% if user.profile.country == 'CA' %}selected{% endif %}>Canada</option>
-            <option value="UK" {% if user.profile.country == 'UK' %}selected{% endif %}>United Kingdom</option>
-            <option value="AU" {% if user.profile.country == 'AU' %}selected{% endif %}>Australia</option>
-            <!-- Add more countries as needed -->
-          </select>
-        </div>
-        
-        <div class="flex justify-end">
-          <button 
-            type="button"
-            class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md mr-2"
-            onclick="window.location.href='{% url 'auth:profile' %}'"
-          >
-            Cancel
-          </button>
-          <button 
-            type="submit"
-            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md"
-          >
-            Save Address
-          </button>
-        </div>
-      </form>
+    <!-- Postal Code -->
+    <div>
+      <label class="block text-xs font-medium text-gray-700 mb-0.5">Postal Code</label>
+      <input 
+        type="text"
+        name="postal_code" 
+        id="postal_code"
+        class="w-full border border-gray-300 rounded px-2 py-1 text-xs h-7"
+        value="{{ user.profile.postal_code|default:'' }}"
+      >
     </div>
   </div>
-</div>
-{% endblock %}
+  
+  <!-- State/province and country on one line -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+    <div>
+      <label class="block text-xs font-medium text-gray-700 mb-0.5">State/Province</label>
+      <input 
+        type="text"
+        name="state" 
+        id="state"
+        class="w-full border border-gray-300 rounded px-2 py-1 text-xs h-7"
+        value="{{ user.profile.state|default:'' }}"
+      >
+    </div>
+    <div>
+      <label class="block text-xs font-medium text-gray-700 mb-0.5">Country</label>
+      <input 
+        type="text"
+        name="country" 
+        id="country"
+        class="w-full border border-gray-300 rounded px-2 py-1 text-xs h-7"
+        value="{{ user.profile.country|default:'' }}"
+        placeholder="Enter country name"
+        list="countries-list"
+      >
+      <datalist id="countries-list">
+        {% for country in countries %}
+          <option value="{{ country }}">
+        {% endfor %}
+      </datalist>
+    </div>
+  </div>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Get form elements
+  const form = document.getElementById('address-form');
+
+  // Handle form submission
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    try {
+      const formData = new FormData(form);
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-CSRFToken': form.querySelector('[name="csrfmiddlewaretoken"]').value
+        }
+      });
+
+      if (!response.ok) {
+        console.error('Error saving address');
+      }
+    } catch (error) {
+      console.error('Error saving address:', error);
+    }
+  });
+});
+</script>

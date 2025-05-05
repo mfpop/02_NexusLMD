@@ -15,15 +15,22 @@ urlpatterns = [
     ),
     path(
         'logout/',
-        auth_views.LogoutView.as_view(next_page='auth:login', http_method_names=['get', 'post']),
+        auth_views.LogoutView.as_view(next_page='/', http_method_names=['get', 'post']),
         name='logout'
     ),
     path('register/', views.register, name='register'),
     # Adding profile-related paths
     path('profile/', views.profile, name='profile'),
-    path('profile/edit/', views.edit_profile, name='edit_profile'),  # Add this line
+    path('profile/edit/', views.edit_profile, name='edit_profile'),
+    path('profile/update-avatar/', views.update_avatar, name='update_avatar'),  # Add this line for avatar updates
     path('profile/work/', views.profile_work, name='profile_work'),
+    path('profile/work/add/', views.add_work_experience, name='add_work_experience'),
+    path('profile/work/update/', views.update_work_experience, name='update_work_experience'),
+    path('profile/work/delete/', views.delete_work_experience, name='delete_work_experience'),
     path('profile/education/', views.profile_education, name='profile_education'),
+    path('profile/education/add/', views.add_education_experience, name='add_education_experience'),
+    path('profile/education/update/', views.update_education_experience, name='update_education_experience'),
+    path('profile/education/delete/', views.delete_education_experience, name='delete_education_experience'),
     path('profile/address/', views.profile_address, name='profile_address'),
     path('password/', views.change_password, name='change_password'),
     path(
@@ -55,5 +62,9 @@ urlpatterns = [
         name='password_reset_complete'
     ),
     # Fix Change Password URL Path
-    path('profile/change-password/', RedirectView.as_view(pattern_name='auth:change_password'), name='profile_change_password'),
+    path(
+        'profile/change-password/', 
+        RedirectView.as_view(pattern_name='auth:change_password'), 
+        name='profile_change_password'
+    ),
 ]

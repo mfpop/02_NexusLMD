@@ -2,66 +2,402 @@
 {% load static %}
 
 {% block title %}
-  My Profile
+  Profile
 {% endblock %}
 {% block page_title %}
-  User Profile
+  My Profile
+{% endblock %}
+
+{% block head_extras %}
+<style>
+  .profile-tab-button.active {
+    border-bottom: 3px solid #2563EB;
+    color: #2563EB;
+    font-weight: 600;
+  }
+  
+  .notification-toast {
+    transform: translateY(-100px);
+    transition: all 0.5s ease-in-out;
+  }
+  
+  .notification-toast.show {
+    transform: translateY(0);
+  }
+</style>
+<!-- Alpine.js store for sharing tab state across components -->
+<script>
+  document.addEventListener('alpine:init', () => {
+    Alpine.store('profileTabs', {
+      activeTab: window.location.hash ? window.location.hash.substring(1) : 'profile',
+      
+      setActiveTab(tab) {
+        this.activeTab = tab;
+        window.location.hash = tab;
+      }
+    });
+    
+    Alpine.store('notification', {
+      message: '',
+      type: 'success',
+      visible: false,
+      
+      show(message, type = 'success') {
+        this.message = message;
+        this.type = type;
+        this.visible = true;
+        
+        setTimeout(() => {
+          this.visible = false;
+        }, 3000);
+      }
+    });
+  });
+</script>
+{% endblock %}
+
+{% block top_menu %}
+  <!-- Notification Toast -->
+  <div 
+    x-data 
+    x-show="$store.notification.visible"
+    :class="$store.notification.type === 'success' ? 'bg-green-100 text-green-800 border-green-400' : 'bg-blue-100 text-blue-800 border-blue-400'"
+    class="notification-toast fixed top-0 right-4 px-4 py-2 rounded-b-lg shadow-md border-b-2 flex items-center z-50"
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0 transform translate-y-[-100px]"
+    x-transition:enter-end="opacity-100 transform translate-y-0"
+    x-transition:leave="transition ease-in duration-300"
+    x-transition:leave-start="opacity-100 transform translate-y-0"
+    x-transition:leave-end="opacity-0 transform translate-y-[-100px]"
+  >
+    <svg x-show="$store.notification.type === 'success'" class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+    </svg>
+    <svg x-show="$store.notification.type === 'info'" class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+    <span x-text="$store.notification.message"></span>
+  </div>
+
+  <!-- Profile Navigation Menu in top menu -->
+  <div class="flex items-center mr-4" x-data>
+    <button 
+      class="px-2 py-1 text-xs text-gray-700 hover:text-blue-600 profile-tab-button transition-all mx-1"
+      :class="{ 'active': $store.profileTabs.activeTab === 'address' }"
+      @click="$store.profileTabs.setActiveTab('address')">
+      <svg class="w-5 h-5 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+      </svg>
+    </button>
+    <button 
+      class="px-2 py-1 text-xs text-gray-700 hover:text-blue-600 profile-tab-button transition-all mx-1"
+      :class="{ 'active': $store.profileTabs.activeTab === 'work' }"
+      @click="$store.profileTabs.setActiveTab('work')">
+      <svg class="w-5 h-5 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+      </svg>
+    </button>
+    <button 
+      class="px-2 py-1 text-xs text-gray-700 hover:text-blue-600 profile-tab-button transition-all mx-1"
+      :class="{ 'active': $store.profileTabs.activeTab === 'education' }"
+      @click="$store.profileTabs.setActiveTab('education')">
+      <svg class="w-5 h-5 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 14l9-5-9-5-9 5 9 5z"></path>
+        <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998a12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"></path>
+      </svg>
+    </button>
+  </div>
 {% endblock %}
 
 {% block content %}
-  <div class="container mx-auto p-6">
-    <div class="bg-white rounded-lg shadow-md p-6">
-      <h1 class="text-2xl font-bold mb-6 text-blue-600">Welcome, {{ user.username }}!</h1>
+<div class="flex flex-col h-full">
+  <!-- Success message toast (hidden by default) -->
+  <div id="profile-updated-message" class="fixed top-4 right-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-md hidden z-50 transition-all duration-500">
+    <div class="flex items-center">
+      <div class="py-1">
+        <svg class="h-6 w-6 text-green-500 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      <div>
+        <p class="font-bold">Profile Updated</p>
+        <p class="text-sm">Your profile has been successfully updated.</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Profile Content -->
+  <div class="flex-grow grid grid-cols-4 gap-4 h-[calc(100vh-100px)] p-4 pb-0" x-data>
+    <!-- Left Column -->
+    <div class="col-span-1 h-full flex flex-col shadow text-center bg-neutral-50 p-4 rounded-lg">
+      <div>
+      <!-- Avatar section -->
+      <div class="relative inline-block group mb-3">
+        <!-- Avatar display as clickable button -->
+        <label for="avatar-input" class="cursor-pointer block">
+          <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-blue-200 relative group">
+            {% if user.profile.avatar_data %}
+              <img 
+                src="data:image/jpeg;base64,{{ user.profile.avatar_data }}" 
+                alt="{{ user.username }}" 
+                class="w-full h-full object-cover"
+                id="avatar-preview"
+              />
+            {% else %}
+              <div class="w-full h-full bg-blue-200 flex items-center justify-center text-blue-600"
+                id="avatar-preview">
+                <span class="text-4xl">{{ user.username.0|upper }}</span>
+              </div>
+            {% endif %}
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-blue-50 p-4 rounded shadow">
-          <h2 class="font-bold text-lg mb-2 text-blue-700">Personal Information</h2>
-          <ul class="space-y-2">
-            <li>
-              <span class="font-medium">Username:</span> {{ user.username }}
-            </li>
-            <li>
-              <span class="font-medium">Email:</span> {{ user.email|default:'Not provided' }}
-            </li>
-            <li>
-              <span class="font-medium">Joined:</span> {{ user.date_joined|date:'F d, Y' }}
-            </li>
-            <li>
-              <span class="font-medium">Last Login:</span> {{ user.last_login|date:'F d, Y H:i' }}
-            </li>
-          </ul>
-          <div class="mt-4">
-            <a href="{% url 'auth:change_password' %}" class="text-sm text-blue-600 hover:text-blue-800">Change Password</a>
+            <!-- Overlay with camera icon on hover -->
+            <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </div>
+          </div>
+        </label>
+
+        <form
+          action="{% url 'auth:update_avatar' %}"
+          method="post" enctype="multipart/form-data"
+          id="avatar-form" 
+          class="mt-2">
+          {% csrf_token %}
+          <input 
+            type="file" 
+            name="avatar" 
+            id="avatar-input"
+            accept="image/jpeg,image/png,image/gif"
+            class="hidden"
+            onchange="document.getElementById('avatar-form').submit();"/>
+        </form>
+      </div>
+    </div>
+        
+        <!-- Username and Email (non-editable) -->
+        <div class="space-y-3 text-left mb-3">
+        <div class="flex items-center flex-grow">
+          <span class="w-24 text-gray-600 text-xs">Email:</span>
+          <div class="flex-1 border border-gray-300 rounded px-2 py-1 text-xs">
+          {{ user.email|default:'' }}
           </div>
         </div>
-
-        <div class="bg-blue-50 p-4 rounded shadow">
-          <h2 class="font-bold text-lg mb-2 text-blue-700">Profile Navigation</h2>
-          <ul class="space-y-2">
-            <li>
-              <a href="{% url 'auth:profile_work' %}" class="text-blue-600 hover:text-blue-800">Work History</a>
-            </li>
-            <li>
-              <a href="{% url 'auth:profile_education' %}" class="text-blue-600 hover:text-blue-800">Education History</a>
-            </li>
-            <li>
-              <a href="{% url 'auth:profile_address' %}" class="text-blue-600 hover:text-blue-800">Address Information</a>
-            </li>
-          </ul>
         </div>
-
-        <div class="bg-blue-50 p-4 rounded shadow">
-          <h2 class="font-bold text-lg mb-2 text-blue-700">Account Actions</h2>
-          <ul class="space-y-2">
-            <li>
-              <a href="{% url 'auth:edit_profile' %}" class="text-blue-600 hover:text-blue-800">Edit Profile</a>
-            </li>
-            <li>
-              <a href="{% url 'auth:logout' %}" class="text-red-500 hover:text-red-700">Logout</a>
-            </li>
-          </ul>
+        
+        <!-- Personal Information -->
+        <div class="space-y-3 text-left">
+        <div class="flex items-center">
+          <span class="w-24 text-gray-600 text-xs">First Name:</span>
+          <input 
+          type="text" 
+          value="{{ user.first_name }}" 
+          class="flex-1 border border-gray-300 rounded px-2 py-1 text-xs"
+          name="first_name"/>
+        </div>
+        <div class="flex items-center">
+          <span class="w-24 text-gray-600 text-xs">Last Name:</span>
+          <input 
+          type="text" 
+          value="{{ user.last_name }}" 
+          class="flex-1 border border-gray-300 rounded px-2 py-1 text-xs"
+          name="last_name"/>
+        </div>
+        <div class="flex items-center">
+          <span class="w-24 text-gray-600 text-xs">Phone:</span>
+          <input 
+          type="text" 
+          value="{{ user.profile.phone|default:'' }}" 
+          class="flex-1 border border-gray-300 rounded px-2 py-1 text-xs"
+          name="phone"/>
+        </div>
+        <div class="flex items-center">
+          <span class="w-24 text-gray-600 text-xs">Title:</span>
+          <input 
+          type="text" 
+          value="{{ user.profile.title|default:'' }}" 
+          class="flex-1 border border-gray-300 rounded px-2 py-1 text-xs"
+          name="title"
+          />
+        </div>
+        </div>
+      
+      <!-- Profile Bio Tab -->
+      <div class="mt-3 flex-grow">
+        <textarea 
+          class="w-full h-full p-3 border border-gray-300 rounded text-xs" 
+          placeholder="Tell us about yourself..."
+          name="bio">{{ user.profile.bio|default:'' }}</textarea>
+      </div>
+    </div>
+    
+    <!-- Right Column -->
+    <div class="col-span-3 bg-neutral-50 rounded-lg shadow h-full flex flex-col gap-6">
+      <!-- Address Tab -->
+      <div x-show="$store.profileTabs.activeTab === 'address'" class="p-4 rounded-lg shadow h-full">
+        <h2 class="text-lg font-bold mb-2 text-blue-700">Address Information</h2>
+        <div id="address-container" class="address-container">
+          <div class="animate-pulse flex space-x-4">
+            <div class="flex-1 space-y-4 py-1">
+              <div class="h-4 bg-blue-200 rounded w-3/4"></div>
+              <div class="space-y-2">
+                <div class="h-4 bg-blue-200 rounded"></div>
+                <div class="h-4 bg-blue-200 rounded w-5/6"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Work Experience Tab -->
+      <div x-show="$store.profileTabs.activeTab === 'work'" class="p-6 rounded-lg shadow h-full">
+        <div 
+          hx-get="{% url 'auth:profile_work' %}" 
+          hx-trigger="intersect once"
+          hx-swap="innerHTML"
+          class="work-experience-container"
+        >
+          <div class="animate-pulse flex space-x-4">
+            <div class="flex-1 space-y-4 py-1">
+              <div class="h-4 bg-blue-200 rounded w-3/4"></div>
+              <div class="space-y-2">
+                <div class="h-4 bg-blue-200 rounded"></div>
+                <div class="h-4 bg-blue-200 rounded w-5/6"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Education Tab -->
+      <div x-show="$store.profileTabs.activeTab === 'education'" class=" p-6 rounded-lg shadow h-full">
+        <h2 class="text-xl font-bold mb-4 text-blue-700">Education History</h2>
+        <div 
+          hx-get="{% url 'auth:profile_education' %}" 
+          hx-trigger="intersect once"
+          hx-swap="innerHTML"
+          class="education-container"
+        >
+          <div class="animate-pulse flex space-x-4">
+            <div class="flex-1 space-y-4 py-1">
+              <div class="h-4 bg-blue-200 rounded w-3/4"></div>
+              <div class="space-y-2">
+                <div class="h-4 bg-blue-200 rounded"></div>
+                <div class="h-4 bg-blue-200 rounded w-5/6"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
+  
+  <!-- Footer with action buttons and registration/login dates -->
+  <div class="grid grid-cols-4 h-[50px] shadow-md bg-gray-200/30 rounded-t-lg mt-4">
+    <div class="col-span-1">
+      <div class="left_footer px-4 flex items-center justify-center h-full">
+        <a href="{% url 'auth:change_password' %}" class="text-red-400 hover:text-blue-700 bg-gray-300/50 rounded-md w-[160px] text-center py-1 border border-gray-200">
+          Change Password
+        </a>
+      </div>
+    </div>
+    <div class="col-span-2">
+      <div class="center_footer text-gray-500 text-sm flex flex-col-2 gap-6 items-center justify-center h-full">
+        <div>Registered: {{ user.date_joined|date:'F d, Y' }}</div>
+        <div>Last Login: {{ user.last_login|date:'F d, Y H:i' }}</div>
+      </div>
+    </div>
+    <div class="col-span-1">
+      <div class="right_footer flex flex-col-2 items-center h-full w-full gap-5 justify-center">
+        <a href="{% url 'home:index' %}" class="text-blue-500 hover:text-blue-700 bg-gray-300/50 rounded-md w-[100px] text-center py-1 border border-gray-200">Cancel</a>
+        <button 
+          class="text-white bg-blue-600 hover:bg-blue-700 rounded-md w-[100px] text-center py-1 border border-blue-600" 
+          hx-post="{% url 'auth:edit_profile' %}" 
+          hx-include="input[name], textarea[name]"
+          hx-target="body"
+          hx-swap="none"
+          hx-on:htmx:afterRequest="handleProfileUpdate(event)"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function handleProfileUpdate(event) {
+    if (event.detail.successful) {
+      Alpine.store('notification').show('Profile updated successfully!', 'success');
+    } else {
+      Alpine.store('notification').show('Error updating profile. Please try again.', 'error');
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Set initial tab from hash on page load
+    const hash = window.location.hash.substring(1);
+    if (['profile', 'address', 'work', 'education'].includes(hash) && Alpine.store('profileTabs')) {
+      Alpine.store('profileTabs').activeTab = hash;
+    }
+    
+    // Listen for hash changes
+    window.addEventListener('hashchange', function() {
+      const hash = window.location.hash.substring(1);
+      if (['profile', 'address', 'work', 'education'].includes(hash) && Alpine.store('profileTabs')) {
+        Alpine.store('profileTabs').activeTab = hash;
+      }
+    });
+
+    // Clear whitespace from textarea content
+    document.querySelectorAll('textarea[name]').forEach(textarea => {
+      textarea.textContent = textarea.textContent.trim();
+    });
+
+    // Load address component when address tab is active
+    const addressContainer = document.getElementById('address-container');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && Alpine.store('profileTabs').activeTab === 'address') {
+          loadAddressComponent();
+        }
+      });
+    }, { threshold: 0.1 });
+
+    if (addressContainer) {
+      observer.observe(addressContainer);
+    }
+
+    // Function to load address component
+    async function loadAddressComponent() {
+      try {
+        const response = await fetch("{% url 'auth:profile_address' %}");
+        if (!response.ok) throw new Error('Network response was not ok');
+        const html = await response.text();
+        addressContainer.innerHTML = html;
+      } catch (error) {
+        console.error('Error loading address component:', error);
+        addressContainer.innerHTML = `
+          <div class="text-red-500 text-center p-4">
+            Error loading address information. Please try again later.
+          </div>
+        `;
+      }
+    }
+
+    // Listen for tab changes to load address component
+    Alpine.store('profileTabs').$watch('activeTab', (newTab) => {
+      if (newTab === 'address') {
+        loadAddressComponent();
+      }
+    });
+  });
+</script>
 {% endblock %}
+
+
+

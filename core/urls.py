@@ -24,7 +24,11 @@ urlpatterns = [
     
     # Authentication app URLs
     path('auth/', include('apps.authenticate.urls')),
-    path('accounts/profile/', RedirectView.as_view(url='/auth/profile/', permanent=False), name='default_profile_redirect'),
+    path(
+        'accounts/profile/', 
+        RedirectView.as_view(url='/auth/profile/', permanent=False), 
+        name='default_profile_redirect'
+    ),
     
     # Root URL redirects to home
     path('', lambda request: redirect('home:index'), name='root'),

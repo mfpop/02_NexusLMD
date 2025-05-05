@@ -11,4 +11,3 @@ if exist .venv\Scripts\activate (
 ) else (
     echo No virtual environment found at .venv
 )
-python manage.py tailwind start
