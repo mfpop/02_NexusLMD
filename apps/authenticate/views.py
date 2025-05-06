@@ -88,24 +88,12 @@ def profile_work(request):
     # Get all work experiences for the user
     work_experiences = WorkExperience.objects.filter(user=request.user)
     
-    # Serialize work experiences
-    serialized_experiences = []
-    for exp in work_experiences:
-        serialized_experiences.append({
-            'id': exp.id,
-            'company': exp.company,
-            'position': exp.position,
-            'start_date': exp.start_date.strftime('%Y-%m-%d'),
-            'end_date': exp.end_date.strftime('%Y-%m-%d') if exp.end_date else None,
-            'description': exp.description or ''
-        })
-    
     return render(
         request, 
         'cotton/authenticate/pages/profile_work.html', 
         {
             'title': 'Work History',
-            'work_experiences': json.dumps(serialized_experiences)
+            'work_experiences': work_experiences  # Pass the QuerySet directly instead of JSON
         }
     )
 

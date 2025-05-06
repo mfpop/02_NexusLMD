@@ -105,7 +105,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'lmd',
         'USER': 'root',
-        'PASSWORD': 'Molly@2025',
+        'PASSWORD': 'Molly,2025',
         'HOST': 'localhost',   # Or the MySQL server's address
         'PORT': '3306',        # Default MySQL port
         'OPTIONS': {
@@ -169,4 +169,4 @@ MEDIA_ROOT = BASE_DIR / 'static/media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # NPM executable path for Django-Tailwind
-NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
+NPM_BIN_PATH = '/opt/homebrew/bin/npm'

@@ -1,445 +1,589 @@
-<!-- Education history content -->
-<div id="education-experience-container" x-data="{ 
-  educations: [
-    {% if education_experiences %}
-      {% for edu in education_experiences %}
-        {
-          id: {{ edu.id }},
-          institution: '{{ edu.institution }}',
-          degree: '{{ edu.degree }}',
-          fieldOfStudy: '{{ edu.field_of_study|default:"" }}',
-          startDate: '{{ edu.start_date|date:"Y-m-d" }}',
-          endDate: '{% if edu.end_date %}{{ edu.end_date|date:"Y-m-d" }}{% endif %}',
-          description: '{{ edu.description|default:"" }}',
-          editing: false,
-          expanded: false
-        }{% if not forloop.last %},{% endif %}
-      {% endfor %}
-    {% endif %}
-  ],
-  newEducation: {
-    institution: '',
-    degree: '',
-    fieldOfStudy: '',
-    startDate: '',
-    endDate: '',
-    description: '',
-    isNew: true
-  },
-  showAddForm: false,
-  statusMessage: '',
-  showStatus: false,
-  selectedEdu: null,
-  toggleEdit(index) {
-    this.educations[index].editing = !this.educations[index].editing;
-  },
-  toggleExpand(index) {
-    this.educations[index].expanded = !this.educations[index].expanded;
-  },
-  addNewRow() {
-    // Insert at the beginning of the array instead of pushing to the end
-    this.educations.unshift({...this.newEducation, editing: true});
-    this.newEducation = {
-      institution: '',
-      degree: '',
-      fieldOfStudy: '',
-      startDate: '',
-      endDate: '',
-      description: '',
-      isNew: true
-    };
-  },
-  removeNewRow(index) {
-    this.educations.splice(index, 1);
-  },
-  saveSuccessCallback() {
-    // Show success message
-    this.statusMessage = 'Data was saved';
-    this.showStatus = true;
-    setTimeout(() => {
-      this.statusMessage = '';
-      this.showStatus = false;
-    }, 2000);
-  }
-  },
-  showSavingMessage() {
-    this.statusMessage = 'Saving...';
-    this.showStatus = true;
-  },
-  formatDate(dateString) {
-    if (!dateString) return 'Present';
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric' }).format(date);
-  },
-  viewDescription(index) {
-    this.selectedEdu = this.educations[index];
-    this.$refs.descriptionModal.style.display = 'flex';
-  }
-}">
+{% load static tailwind_tags %}
+{% load static %}
 
-  <!-- Header with add button -->
-  <div class="flex justify-between items-center mb-6">
-    <div class="flex-grow"></div>
-    <div class="flex items-center space-x-3">
-      <!-- Status message toast -->
-      <div 
-        x-show="showStatus" 
-        x-text="statusMessage"
-        :class="statusMessage === 'Saving...' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'"
-        class="px-4 py-2 rounded-md text-sm font-medium animate-pulse shadow-sm"
-        x-transition
-      ></div>
-      <!-- Add button -->
-      <button 
-        @click="addNewRow()"
-        class="flex items-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 text-sm rounded-md shadow-sm transition-all"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-        </svg>
-        <span>Add Education</span>
-      </button>
-    </div>
-  </div>
+<!-- Hidden form with CSRF token for JavaScript operations -->
+<form id="csrf-form" style="display: none;">
+    {% csrf_token %}
+</form>
 
-  <!-- Education Experience Datasheet Table -->
-  <div class="mb-8 overflow-hidden border border-gray-200 rounded-lg">
-    <!-- Empty state message -->
-    <template x-if="educations.length === 0">
-      <div class="bg-gray-50 p-6 text-center border-b border-gray-200">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path d="M12 14l9-5-9-5-9 5 9 5z"></path>
-          <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998a12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"></path>
-        </svg>
-        <p class="text-gray-600">No education history records found.</p>
-        <p class="text-gray-500 text-sm mt-1">Click "Add Education" to add your educational background.</p>
-      </div>
-    </template>
-
-    <!-- Table Header -->
-    <template x-if="educations.length > 0">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-          <tr>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Degree</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Institution</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
-            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th>
-            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-              <div class="flex justify-end">
-                <button 
-                  type="button"
-                  @click.prevent="addNewRow()"
-                  class="flex items-center p-2 bg-blue-100 hover:bg-blue-200 text-blue-700 text-xs rounded-full transition-colors"
-                  title="Add New Entry"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                  </svg>
-                </button>
-              </div>
-            </th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <!-- Normal View Rows -->
-          <template x-for="(edu, index) in educations" :key="index">
-            <!-- View Mode Row -->
-            <template x-if="!edu.editing">
-              <tr class="hover:bg-gray-50">
-                <!-- Degree Cell -->
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm font-medium text-gray-900" x-text="edu.degree"></div>
-                  <div class="text-xs text-gray-500" x-text="edu.fieldOfStudy"></div>
-                </td>
+<div class="bg-white p-6 rounded-lg shadow-md mb-6">
+    <h2 class="text-xl font-semibold mb-4">Education History</h2>
+    <p class="text-gray-600 mb-6">
+        Manage your educational background. Add your degrees, institutions attended, and fields of study.
+    </p>
+    
+    <div x-data="{ 
+            showAddRow: false, 
+            editingId: null, 
+            showModal: false, 
+            modalContent: '', 
+            selectedExpId: null,
+            handleInlineFormSubmission(event) {
+                event.preventDefault();
+                const form = event.target;
                 
-                <!-- Institution Cell -->
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    <span x-text="edu.institution"></span>
-                  </div>
-                </td>
+                // Prepare form data (handle current checkbox)
+                const currentCheckbox = form.querySelector('#current_education');
+                const endDateField = form.querySelector('#end_date');
                 
-                <!-- Duration Cell -->
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <span x-text="formatDate(edu.startDate)"></span>
-                  <span class="mx-1">-</span>
-                  <span x-text="formatDate(edu.endDate)"></span>
-                </td>
+                if (currentCheckbox && currentCheckbox.checked) {
+                    endDateField.disabled = false;
+                    endDateField.value = '';
+                }
                 
-                <!-- Description Cell -->
-                <td class="px-6 py-4 text-center">
-                  <button 
-                    @click="viewDescription(index)"
-                    class="text-xs text-blue-600 hover:text-blue-900 font-medium flex items-center justify-center mx-auto"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                    View Details
-                  </button>
-                </td>
+                // Get form data
+                const formData = new FormData(form);
                 
-                <!-- Actions Cell -->
-                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div class="flex items-center justify-end space-x-2">
-                    <!-- Edit button -->
-                    <button 
-                      @click="toggleEdit(index)"
-                      class="p-1.5 text-yellow-600 hover:bg-yellow-50 rounded transition-colors"
-                      title="Edit"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                      </svg>
-                    </button>
+                // Get CSRF token
+                const csrfToken = document.querySelector('#csrf-form [name=csrfmiddlewaretoken]').value;
+                
+                // Add headers
+                const headers = {
+                    'X-CSRFToken': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'HX-Request': 'true'
+                };
+                
+                // Submit the form using fetch API
+                fetch('{% url 'auth:add_education_experience' %}', {
+                    method: 'POST',
+                    headers: headers,
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to add education experience');
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    this.showAddRow = false; // Hide form row (using Alpine.js 'this')
+                    form.reset(); // Reset the form
+                    window.location.reload(); // Reload the page
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showMessage('Error adding education experience: ' + error.message, 'error');
+                });
+            }
+        }" class="mb-8">
+        <!-- Education experience table -->
+        <div class="overflow-x-auto shadow-md rounded-md">
+            {% if education_experiences %}
+            <table class="min-w-full divide-y divide-gray-200 border-collapse">
+                <thead class="bg-gray-50">
+                    <tr class="divide-x divide-gray-100">
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Degree
+                        </th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Institution
+                        </th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Field of Study
+                        </th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
+                            Start Date
+                        </th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
+                            End Date
+                        </th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Description
+                        </th>
+                        <th scope="col" class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-20">
+                            <button 
+                                @click="showAddRow = !showAddRow; editingId = null;" 
+                                class="text-blue-600 hover:text-blue-700"
+                                title="Add Education Experience"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <!-- Add Education Experience row -->
+                    <tr x-show="showAddRow" class="bg-blue-50 divide-x divide-gray-100">
+                        <!-- First cell contains a properly formatted form -->
+                        <td colspan="7" class="px-0 py-0">
+                            <form action="{% url 'auth:add_education_experience' %}" method="POST" id="educationForm" onsubmit="return handleEducationSubmit(event)">
+                                {% csrf_token %}
+                                <table class="w-full">
+                                    <tr>
+                                        <td class="px-4 py-3">
+                                            <input type="text" id="degree" name="degree" required 
+                                                placeholder="Degree"
+                                                class="w-full px-2 py-1 border border-gray-300 rounded-md text-sm"
+                                            >
+                                        </td>
+                                        
+                                        <!-- Institution column -->
+                                        <td class="px-4 py-3">
+                                            <input type="text" id="institution" name="institution" required
+                                                placeholder="Institution"
+                                                class="w-full px-2 py-1 border border-gray-300 rounded-md text-sm"
+                                            >
+                                        </td>
+                                        
+                                        <!-- Field of Study column -->
+                                        <td class="px-4 py-3">
+                                            <input type="text" id="field_of_study" name="field_of_study"
+                                                placeholder="Field of Study"
+                                                class="w-full px-2 py-1 border border-gray-300 rounded-md text-sm"
+                                            >
+                                        </td>
+                                        
+                                        <!-- Start Date column -->
+                                        <td class="px-4 py-3 w-24">
+                                            <input type="date" id="start_date" name="start_date" required
+                                                class="datepicker w-full px-2 py-1 border border-gray-300 rounded-md text-sm"
+                                            >
+                                        </td>
+                                        
+                                        <!-- End Date column -->
+                                        <td class="px-4 py-3 w-24">
+                                            <div>
+                                                <input type="date" id="end_date" name="end_date"
+                                                    class="datepicker w-full px-2 py-1 border border-gray-300 rounded-md text-sm"
+                                                >
+                                                <div class="mt-1 flex items-center">
+                                                    <input type="checkbox" id="current_education" name="current_education"
+                                                        class="mr-1" 
+                                                        onchange="document.getElementById('end_date').disabled = this.checked;"
+                                                    >
+                                                    <label for="current_education" class="text-xs text-gray-500">Current</label>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        
+                                        <!-- Description column -->
+                                        <td class="px-4 py-3">
+                                            <textarea id="description" name="description" rows="2"
+                                                placeholder="Describe your educational achievements and activities..."
+                                                class="w-full px-2 py-1 border border-gray-300 rounded-md text-sm"
+                                            ></textarea>
+                                        </td>
+                                        
+                                        <!-- Actions column -->
+                                        <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
+                                            <div class="flex justify-end space-x-[5px]">
+                                                <button 
+                                                    type="button"
+                                                    @click="showAddRow = false" 
+                                                    class="text-gray-500 hover:text-gray-700"
+                                                    title="Cancel"
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                                    </svg>
+                                                </button>
+                                                <button 
+                                                    type="submit" 
+                                                    class="text-green-600 hover:text-green-700"
+                                                    title="Save"
+                                                    onclick="prepareCurrentEducationForSubmission()"
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </td>
+                    </tr>
                     
-                    <!-- Delete button -->
-                    <button 
-                      class="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
-                      hx-delete="{% url 'auth:delete_education_experience' %}"
-                      hx-trigger="click"
-                      hx-headers='{"X-CSRFToken": "{{ csrf_token }}", "Content-Type": "application/json"}'
-                      hx-vals='javascript:JSON.stringify({"id": edu.id})'
-                      hx-target="#education-experience-container"
-                      hx-swap="outerHTML"
-                      hx-confirm="Are you sure you want to delete this education record?"
-                      title="Delete"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            </template>
+                    <!-- Existing education experience rows -->
+                    {% for exp in education_experiences %}
+                        <tr 
+                            :class="editingId === {{ exp.id }} ? 'bg-blue-50' : ''" 
+                            class="hover:bg-gray-50 transition-colors divide-x divide-gray-100"
+                        >
+                            <!-- Degree column -->
+                            <td class="px-4 py-3 whitespace-nowrap">
+                                <div x-show="editingId !== {{ exp.id }}" class="text-sm font-medium text-gray-900">{{ exp.degree }}</div>
+                                <div x-show="editingId === {{ exp.id }}" class="text-sm">
+                                    <input type="text" id="edit_degree_{{ exp.id }}" name="degree" required
+                                        value="{{ exp.degree }}"
+                                        class="w-full px-2 py-1 border border-gray-300 rounded-md text-sm"
+                                    >
+                                </div>
+                            </td>
+                            
+                            <!-- Institution column -->
+                            <td class="px-4 py-3 whitespace-nowrap">
+                                <div x-show="editingId !== {{ exp.id }}" class="text-sm text-gray-900">{{ exp.institution }}</div>
+                                <div x-show="editingId === {{ exp.id }}" class="text-sm">
+                                    <input type="text" id="edit_institution_{{ exp.id }}" name="institution" required
+                                        value="{{ exp.institution }}"
+                                        class="w-full px-2 py-1 border border-gray-300 rounded-md text-sm"
+                                    >
+                                </div>
+                            </td>
+                            
+                            <!-- Field of Study column -->
+                            <td class="px-4 py-3 whitespace-nowrap">
+                                <div x-show="editingId !== {{ exp.id }}" class="text-sm text-gray-900">{{ exp.field_of_study|default:"" }}</div>
+                                <div x-show="editingId === {{ exp.id }}" class="text-sm">
+                                    <input type="text" id="edit_field_of_study_{{ exp.id }}" name="field_of_study"
+                                        value="{{ exp.field_of_study|default:"" }}"
+                                        class="w-full px-2 py-1 border border-gray-300 rounded-md text-sm"
+                                    >
+                                </div>
+                            </td>
+                            
+                            <!-- Start Date column -->
+                            <td class="px-4 py-3 whitespace-nowrap w-24">
+                                <div x-show="editingId !== {{ exp.id }}" class="text-sm text-gray-500">
+                                    {{ exp.start_date|date:"M Y" }}
+                                </div>
+                                <div x-show="editingId === {{ exp.id }}" class="text-sm">
+                                    <input type="date" id="edit_start_date_{{ exp.id }}" name="start_date" required
+                                        value="{{ exp.start_date|date:'Y-m-d' }}"
+                                        class="datepicker w-full px-2 py-1 border border-gray-300 rounded-md text-sm"
+                                    >
+                                </div>
+                            </td>
+                            
+                            <!-- End Date column -->
+                            <td class="px-4 py-3 whitespace-nowrap w-24">
+                                <div x-show="editingId !== {{ exp.id }}" class="text-sm text-gray-500">
+                                    {% if exp.end_date %}
+                                        {{ exp.end_date|date:"M Y" }}
+                                    {% else %}
+                                        Present
+                                    {% endif %}
+                                </div>
+                                <div x-show="editingId === {{ exp.id }}" class="text-sm">
+                                    <input type="date" id="edit_end_date_{{ exp.id }}" name="end_date"
+                                        value="{% if exp.end_date %}{{ exp.end_date|date:'Y-m-d' }}{% endif %}"
+                                        {% if not exp.end_date %}disabled{% endif %}
+                                        class="datepicker w-full px-2 py-1 border border-gray-300 rounded-md text-sm"
+                                    >
+                                    <div class="mt-1 flex items-center">
+                                        <input type="checkbox" id="edit_current_education_{{ exp.id }}" 
+                                            class="mr-1" 
+                                            {% if not exp.end_date %}checked{% endif %}
+                                            onchange="document.getElementById('edit_end_date_{{ exp.id }}').disabled = this.checked;"
+                                        >
+                                        <label for="edit_current_education_{{ exp.id }}" class="text-xs text-gray-500">Current</label>
+                                    </div>
+                                </div>
+                            </td>
+                            
+                            <!-- Description column -->
+                            <td class="px-4 py-3">
+                                <div x-show="editingId !== {{ exp.id }}" class="text-sm text-gray-500">
+                                    {% if exp.description %}
+                                        <div class="description-preview truncate max-w-xs" @click="showModal = true; modalContent = `{{ exp.description|escapejs }}`; selectedExpId = {{ exp.id }}">
+                                            {{ exp.description|truncatechars:50 }}
+                                        </div>
+                                    {% else %}
+                                        <span class="text-gray-400 italic">No description</span>
+                                    {% endif %}
+                                </div>
+                                <div x-show="editingId === {{ exp.id }}" class="text-sm">
+                                    <textarea id="edit_description_{{ exp.id }}" name="description" rows="2"
+                                        class="w-full px-2 py-1 border border-gray-300 rounded-md text-sm"
+                                    >{{ exp.description }}</textarea>
+                                </div>
+                            </td>
+                            
+                            <!-- Actions column -->
+                            <td class="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
+                                <div x-show="editingId !== {{ exp.id }}" class="flex justify-end space-x-[5px]">
+                                    <button 
+                                        @click="editingId = {{ exp.id }}; showAddRow = false" 
+                                        class="text-blue-600 hover:text-blue-900"
+                                        title="Edit"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                                        </svg>
+                                    </button>
+                                    <button 
+                                        onclick="deleteEducationExperience({{ exp.id }})"
+                                        class="text-red-600 hover:text-red-900"
+                                        title="Delete"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div x-show="editingId === {{ exp.id }}" class="flex justify-end space-x-[5px]">
+                                    <button 
+                                        type="button"
+                                        @click="editingId = null" 
+                                        class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-2 py-1 rounded text-xs"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button 
+                                        type="button"
+                                        @click="updateEducationExperience({{ exp.id }})" 
+                                        class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded text-xs"
+                                    >
+                                        Save
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
             
-            <!-- Edit Mode Row -->
-            <template x-if="edu.editing">
-              <tr class="bg-blue-50">
-                <td colspan="5" class="px-6 py-4">
-                  <div class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <!-- Degree input -->
-                      <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">Degree/Certificate</label>
-                        <input 
-                          type="text" 
-                          x-model="edu.degree"
-                          class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500"
-                          placeholder="Bachelor's, Master's, Certificate, etc."
-                        />
-                      </div>
-                      
-                      <!-- Institution input -->
-                      <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">Institution</label>
-                        <input 
-                          type="text" 
-                          x-model="edu.institution"
-                          class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500"
-                          placeholder="School or institution name"
-                        />
-                      </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <!-- Field of Study input -->
-                      <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">Field of Study</label>
-                        <input 
-                          type="text" 
-                          x-model="edu.fieldOfStudy"
-                          class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500"
-                          placeholder="Computer Science, Business, etc."
-                        />
-                      </div>
-                      
-                      <!-- Start Date input -->
-                      <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">Start Date</label>
-                        <input 
-                          type="date" 
-                          x-model="edu.startDate"
-                          class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500"
-                        />
-                      </div>
-                      
-                      <!-- End Date input -->
-                      <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1">End Date</label>
-                        <input 
-                          type="date" 
-                          x-model="edu.endDate"
-                          class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500"
-                        />
-                        <div class="mt-1 text-xs text-gray-500">Leave blank if currently attending</div>
-                      </div>
-                    </div>
-
-                    <!-- Description textarea -->
-                    <div>
-                      <label class="block text-xs font-medium text-gray-700 mb-1">Description</label>
-                      <textarea 
-                        x-model="edu.description"
-                        rows="3"
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Describe your academic achievements, activities, awards, etc."
-                      ></textarea>
-                    </div>
-
-                    <div class="flex justify-end space-x-3 pt-2">
-                      <!-- Actions -->
-                      <template x-if="!edu.isNew">
-                        <button 
-                          @click="toggleEdit(index)"
-                          class="px-3 py-2 bg-gray-100 text-gray-700 rounded-md text-sm hover:bg-gray-200"
-                        >
-                          Cancel
+            <!-- Description Modal -->
+            <div 
+                x-show="showModal" 
+                class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+            >
+                <div class="bg-white rounded-lg overflow-hidden shadow-xl max-w-2xl w-full">
+                    <div class="bg-gray-100 px-4 py-3 border-b flex justify-between items-center">
+                        <h3 class="text-lg font-medium text-gray-900">Education Description</h3>
+                        <button @click="showModal = false" class="text-gray-500 hover:text-gray-700">
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
                         </button>
-                      </template>
-                      
-                      <template x-if="edu.isNew">
-                        <button 
-                          @click="removeNewRow(index)"
-                          class="px-3 py-2 bg-gray-100 text-gray-700 rounded-md text-sm hover:bg-gray-200"
-                        >
-                          Cancel
-                        </button>
-                      </template>
-                      
-                      <!-- Save existing education button -->
-                      <template x-if="!edu.isNew">
-                        <button 
-                          @click="showSavingMessage(); toggleEdit(index)"
-                          class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700"
-                          hx-post="{% url 'auth:update_education_experience' %}"
-                          hx-trigger="click"
-                          hx-headers='{"X-CSRFToken": "{{ csrf_token }}", "Content-Type": "application/json"}'
-                          hx-vals='javascript:JSON.stringify({
-                            "id": edu.id,
-                            "institution": edu.institution,
-                            "degree": edu.degree,
-                            "fieldOfStudy": edu.fieldOfStudy,
-                            "startDate": edu.startDate,
-                            "endDate": edu.endDate,
-                            "description": edu.description
-                          })'
-                          hx-target="#education-experience-container"
-                          hx-swap="outerHTML"
-                        >
-                          Save Changes
-                        </button>
-                      </template>
-                      
-                      <!-- Save new education button -->
-                      <template x-if="edu.isNew">
-                        <button 
-                          @click="showSavingMessage()"
-                          class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700"
-                          hx-post="{% url 'auth:add_education_experience' %}"
-                          hx-trigger="click"
-                          hx-headers='{"X-CSRFToken": "{{ csrf_token }}", "Content-Type": "application/json"}'
-                          hx-vals='javascript:JSON.stringify({
-                            "institution": edu.institution,
-                            "degree": edu.degree,
-                            "fieldOfStudy": edu.fieldOfStudy,
-                            "startDate": edu.startDate,
-                            "endDate": edu.endDate,
-                            "description": edu.description
-                          })'
-                          hx-target="#education-experience-container"
-                          hx-swap="outerHTML"
-                        >
-                          Save Education
-                        </button>
-                      </template>
                     </div>
-                  </div>
-                </td>
-              </tr>
-            </template>
-          </template>
-        </tbody>
-      </table>
-    </template>
-  </div>
-
-  <!-- Description Modal -->
-  <div x-ref="descriptionModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 opacity-0 transition-opacity duration-300" style="display:none">
-    <div @click.away="$refs.descriptionModal.style.display='none'" class="bg-white p-6 rounded-lg shadow-xl w-full max-w-lg transform transition-transform duration-300 scale-95 opacity-0" x-ref="modalContent">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-bold text-gray-900" x-text="selectedEdu?.degree"></h3>
-        <button @click="$refs.descriptionModal.style.display='none'" class="text-gray-400 hover:text-gray-500">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-      <div class="mb-2">
-        <span class="font-medium text-blue-600" x-text="selectedEdu?.institution"></span>
-        <span class="mx-2 text-gray-400">|</span>
-        <span class="text-gray-600">
-          <span x-text="formatDate(selectedEdu?.startDate)"></span>
-          <span class="mx-1">-</span>
-          <span x-text="formatDate(selectedEdu?.endDate)"></span>
-        </span>
-      </div>
-      <div class="text-sm text-gray-500 mb-2" x-show="selectedEdu?.fieldOfStudy">
-        <span x-text="selectedEdu?.fieldOfStudy"></span>
-      </div>
-      <div class="border-t border-gray-200 pt-4 mt-2">
-        <p class="text-gray-700 mb-6 whitespace-pre-line" x-text="selectedEdu?.description"></p>
-      </div>
-      <div class="flex justify-end">
-        <button 
-          @click="$refs.descriptionModal.style.display='none'" 
-          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Close
-        </button>
-      </div>
+                    <div class="p-4 space-y-2 max-h-96 overflow-y-auto">
+                        <p class="text-gray-700 whitespace-pre-wrap" x-text="modalContent"></p>
+                    </div>
+                    <div class="bg-gray-100 px-4 py-3 flex justify-end">
+                        <button @click="editingId = selectedExpId; showModal = false" class="mr-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md">
+                            Edit
+                        </button>
+                        <button @click="showModal = false" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">No education history</h3>
+                <p class="mt-1 text-sm text-gray-500">Add your educational background to enhance your profile.</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Flash messages -->
+        {% if messages %}
+            <div class="mt-6">
+                {% for message in messages %}
+                    <div class="p-4 mb-2 rounded-md {% if message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
     </div>
-  </div>
+</div>
 
-  <!-- Alpine.js enhancements for modal animations -->
-  <script>
-    document.addEventListener('alpine:initialized', () => {
-      // Modal animations
-      const descriptionModal = document.querySelector('[x-ref="descriptionModal"]');
-      const modalContent = document.querySelector('[x-ref="modalContent"]');
-      
-      if (descriptionModal && modalContent) {
-        descriptionModal.addEventListener('transitionend', function(e) {
-          if (e.target === this && this.style.opacity === '0') {
-            this.style.display = 'none';
-          }
+<!-- JavaScript for date pickers and AJAX operations -->
+<script>
+    // Initialize date pickers when the DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        flatpickr(".datepicker", {
+            allowInput: true,
+            dateFormat: "Y-m-d"
+        });
+    });
+    
+    // Function to handle education form submission and prevent opening in new window
+    function handleEducationSubmit(event) {
+        // Prevent the default form submission
+        event.preventDefault();
+        
+        // Get the form element
+        const form = event.target;
+        
+        // Call the function to prepare the current education checkbox
+        prepareCurrentEducationForSubmission();
+        
+        // Get form data
+        const formData = new FormData(form);
+        
+        // Submit using fetch API
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to add education experience');
+            }
+            return response.text();
+        })
+        .then(() => {
+            // Hide the form row using Alpine.js
+            const alpineDiv = document.querySelector('[x-data]');
+            if (alpineDiv && window.Alpine) {
+                Alpine.$data(alpineDiv).showAddRow = false;
+            }
+            
+            // Show success message
+            showMessage('Education experience added successfully!', 'success');
+            
+            // Reload the page after a short delay
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showMessage('Error adding education experience: ' + error.message, 'error');
         });
         
-        // Override the Alpine.js open/close behavior
-        Object.defineProperty(descriptionModal, 'style', {
-          set(newStyle) {
-            if (newStyle.display === 'flex') {
-              this.style.display = 'flex';
-              setTimeout(() => {
-                this.style.opacity = '1';
-                modalContent.style.opacity = '1';
-                modalContent.style.transform = 'scale(1)';
-              }, 10);
-            } else if (newStyle.display === 'none') {
-              this.style.opacity = '0';
-              modalContent.style.opacity = '0';
-              modalContent.style.transform = 'scale(0.95)';
+        // Return false to prevent the default form submission
+        return false;
+    }
+    
+    // Function to prepare the current education checkbox before form submission
+    function prepareCurrentEducationForSubmission() {
+        const form = document.getElementById('educationForm');
+        if (!form) return;
+        
+        const currentCheckbox = form.querySelector('#current_education');
+        const endDateField = form.querySelector('#end_date');
+        
+        if (currentCheckbox && currentCheckbox.checked && endDateField) {
+            // If it's current education, ensure the end_date is enabled before submission
+            // so that it can be submitted as an empty value
+            endDateField.disabled = false;
+            endDateField.value = '';
+        }
+    }
+    
+    // Function to display status messages
+    function showMessage(message, type) {
+        const messageContainer = document.createElement('div');
+        messageContainer.className = `p-4 mb-2 rounded-md ${type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`;
+        messageContainer.textContent = message;
+        
+        // Find or create messages container
+        let messagesContainer = document.querySelector('.mt-6');
+        if (!messagesContainer) {
+            messagesContainer = document.createElement('div');
+            messagesContainer.className = 'mt-6';
+            document.querySelector('div.mb-8').appendChild(messagesContainer);
+        }
+        
+        messagesContainer.appendChild(messageContainer);
+        
+        // Remove the message after 5 seconds
+        setTimeout(() => {
+            messageContainer.remove();
+            if (messagesContainer.children.length === 0) {
+                messagesContainer.remove();
             }
-          },
-          get() {
-            return this.style;
-          }
+        }, 5000);
+    }
+    
+    // Function to handle education experience deletion
+    function deleteEducationExperience(id) {
+        if (confirm("Are you sure you want to delete this education experience?")) {
+            // Get CSRF token from the hidden form
+            const csrfToken = document.querySelector('#csrf-form [name=csrfmiddlewaretoken]').value;
+            
+            // Send DELETE request
+            fetch("{% url 'auth:delete_education_experience' %}", {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ id: id })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to delete education experience');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    // Reload the page to show updated list
+                    window.location.reload();
+                } else {
+                    alert(data.message || 'An error occurred');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while deleting the education experience');
+            });
+        }
+    }
+    
+    // Function to handle education experience updates
+    function updateEducationExperience(id) {
+        // Get CSRF token from the hidden form
+        const csrfToken = document.querySelector('#csrf-form [name=csrfmiddlewaretoken]').value;
+        
+        // Get form values
+        const institution = document.getElementById(`edit_institution_${id}`).value;
+        const degree = document.getElementById(`edit_degree_${id}`).value;
+        const fieldOfStudy = document.getElementById(`edit_field_of_study_${id}`).value;
+        const startDate = document.getElementById(`edit_start_date_${id}`).value;
+        const endDateField = document.getElementById(`edit_end_date_${id}`);
+        const endDate = !endDateField.disabled ? endDateField.value : null;
+        const description = document.getElementById(`edit_description_${id}`).value;
+        
+        // Validate required fields
+        if (!institution || !degree || !startDate) {
+            alert('Institution, degree, and start date are required fields');
+            return;
+        }
+        
+        // Send update request
+        fetch("{% url 'auth:update_education_experience' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken,
+                'X-Requested-With': 'XMLHttpRequest',
+                'HX-Request': 'true'
+            },
+            body: JSON.stringify({
+                id: id,
+                institution: institution,
+                degree: degree,
+                fieldOfStudy: fieldOfStudy,
+                startDate: startDate,
+                endDate: endDate,
+                description: description
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to update education experience');
+            }
+            // Reload the page to show updated data
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while updating the education experience');
         });
-      }
-    });
-  </script>
-</div>
+    }
+</script>

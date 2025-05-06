@@ -10,7 +10,6 @@
     "djhtml.indentSize": 4,
     "djhtml.closingBracketNewline": true,
     "djhtml.tabWidth": 4,
-    
     // Ruff settings
     "python.linting.enabled": true,
     "[python]": {
@@ -22,5 +21,6 @@
         "editor.defaultFormatter": "charliermarsh.ruff"
     },
     "ruff.enable": true,
-    "ruff.importStrategy": "fromEnvironment"
+    "ruff.importStrategy": "fromEnvironment",
+    "sqltools.connections": []
 }

@@ -1,10 +1,21 @@
 import os
 import django
-from django.db import connection
+from django.db import connection, connections
+from django.db.utils import OperationalError
 
 # Set up Django environment
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
-django.setup()
+
+# Initialize Django
+try:
+    django.setup()
+    db_conn = connections['default']
+    db_conn.cursor()
+    print("Successfully connected to the MySQL database.")
+except OperationalError as e:
+    print(f"Failed to connect to the MySQL database: {e}")
+except Exception as e:
+    print(f"An unexpected error occurred: {e}")
 
 def test_mysql_connection():
     """Test the MySQL connection and check profile-related tables."""
